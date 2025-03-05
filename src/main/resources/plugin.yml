@@ -1,0 +1,21 @@
+name: DisplayShopAddon64
+version: ${project.version}
+description: ${project.description}
+author: tbm00
+main: dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64
+api-version: 1.17
+depend: [DisplayShops, Vault]
+commands:
+  testshop:
+    description: Main command for DisplayShopAddon64
+  buy:
+    description: Alternate command for DisplayShopAddon64
+  sell:
+    description: Alternate command for DisplayShopAddon64
+permissions:
+  displayshopaddon64.player:
+    description: Ability to use the player features
+    default: true
+  displayshopaddon64.admin:
+    description: Ability to use the admin features
+    default: op
