@@ -7,12 +7,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import xzot1k.plugins.ds.api.objects.Shop;
 
@@ -61,9 +66,13 @@ public class ShopCmd implements TabExecutor {
             case "buy":
                 return handleBuyCmd(player, args);
             case "advertise":
-                return handleAdvertiseCmd(player, args);
-            case "locate":
-                return handleLocateCmd(player, args);
+                return handleAdvertiseCmd(player);
+            case "list":
+                return handleListCmd(player, args);
+            case "tp":
+                return handleTeleportCmd(player, args);
+            case "store-inv":
+                return handleStoreInvCmd(player);
             case "deposit-all":
                 return handleDepositCmd(player, args);
             case "withdraw-all":
@@ -94,13 +103,18 @@ public class ShopCmd implements TabExecutor {
      * @return true if command was processed successfully
      */
     private boolean handleHelpCmd(Player player) {
-        player.sendMessage(ChatColor.DARK_GREEN + "--- " + ChatColor.GREEN + "Shop Commands" + ChatColor.DARK_GREEN + " ---\n"
-            + ChatColor.WHITE + "/testshop" + ChatColor.GRAY + " Open shop category GUI\n"
-            + ChatColor.WHITE + "/testshop [item name]" + ChatColor.GRAY + " Search for a specific item shop\n"
+        player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shop Owner Commands" + ChatColor.DARK_PURPLE + " ---\n"
             + ChatColor.WHITE + "/testshop buy <#>" + ChatColor.GRAY + " Buy shop creation item(s)\n"
             + ChatColor.WHITE + "/testshop advertise" + ChatColor.GRAY + " Broadcast the shop you're looking at\n"
+            + ChatColor.WHITE + "/testshop list" + ChatColor.GRAY + " Get a list of all your shops\n"
+            + ChatColor.WHITE + "/testshop tp <#>" + ChatColor.GRAY + " Teleport to one of your shops\n"
+            + ChatColor.WHITE + "/testshop store-inv" + ChatColor.GRAY + " Deposit all appicable items from your inv into your shops\n"
             + ChatColor.WHITE + "/testshop deposit-all <#>/max" + ChatColor.GRAY + " Deposit money into all your shops\n"
-            + ChatColor.WHITE + "/testshop withdraw-all <#>/max" + ChatColor.GRAY + " Withdraw money from all your shops\n"
+            + ChatColor.WHITE + "/testshop withdraw-all <#>/max" + ChatColor.GRAY + " Withdraw money from all your shops"
+        );
+        player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shopper Commands" + ChatColor.DARK_PURPLE + " ---\n"
+            + ChatColor.WHITE + "/testshop" + ChatColor.GRAY + " Open shop category GUI\n"
+            + ChatColor.WHITE + "/testshop [item name]" + ChatColor.GRAY + " Search for a specific item shop"
         );
         return true;
     }
@@ -125,10 +139,9 @@ public class ShopCmd implements TabExecutor {
      * Handles the sub command for advertising shops.
      * 
      * @param player the command sender
-     * @param args the arguments passed to the command
      * @return true if command was processed successfully
      */
-    private boolean handleAdvertiseCmd(Player player, String[] args) {
+    private boolean handleAdvertiseCmd(Player player) {
         Utils.sudoCommand(player, "ds advertise");
         return true;
     }
@@ -136,22 +149,145 @@ public class ShopCmd implements TabExecutor {
     /**
      * Handles the sub command for locating display shops.
      * 
-     * @param player the command sender
+     * @param sender the command sender
      * @param args the arguments passed to the command
      * @return true if command was processed successfully
      */
-    private boolean handleLocateCmd(Player player, String[] args) {
+    private boolean handleListCmd(Player sender, String[] args) {
+        Player target;
+        if (args.length > 1) {
+            target = Utils.getPlayer(args[1]);
+            if (target==null) {
+                Utils.sendMessage(sender, "&cCouldn't find target!");
+                return true;
+            }
+        } else target = sender;
+        
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        UUID uuid = player.getUniqueId();
+        UUID uuid = target.getUniqueId();
         int i = 0;
         for (Shop shop : dsMap.values()) {
             if (shop.getShopItem()==null) continue;
-            if (shop.getOwnerUniqueId() != uuid) continue;
+            if (shop.getOwnerUniqueId()==null || !shop.getOwnerUniqueId().equals(uuid)) continue;
             ++i;
-            Utils.sendMessage(player, "&7" + i + " &b" + shop.getShopItem().getType().toString().toLowerCase() + " &7@ "
+            Utils.sendMessage(sender, "&7" + i + ". &b" + shop.getShopItem().getType().toString().toLowerCase() + " &7@ "
                 + shop.getBaseLocation().getWorldName() + ": " + shop.getBaseLocation().getX() + ", "
                 + shop.getBaseLocation().getY() + ", " + shop.getBaseLocation().getZ());
-        } if (i<1) Utils.sendMessage(player, "&cCouldn't find any of your DisplayShops!");
+        } if (i<1) Utils.sendMessage(sender, "&cCouldn't find any DisplayShops!");
+        return true;
+    }
+
+    /**
+     * Handles the sub command for teleporting to display shops.
+     * 
+     * @param sender the command sender
+     * @param args the arguments passed to the command
+     * @return true if command was processed successfully
+     */
+    private boolean handleTeleportCmd(Player sender, String[] args) {
+        if (args[1]==null || args[1].isBlank()) {
+            Utils.sendMessage(sender, "&f/testshop tp <#> - &7Teleport to your shop (use &n/testshop list&r&7 to for indices)");
+            return true;
+        }
+
+        int index;
+        Player target;
+        if (args[1].startsWith("-")) {
+            target = Utils.getPlayer(args[1].substring(1));
+            if (target==null) {
+                Utils.sendMessage(sender, "&cCouldn't find target!");
+                return true;
+            }
+            try {index = Integer.parseInt(args[2]);} 
+            catch (Exception e) {
+                Utils.sendMessage(sender, "&cEntered index must be an integer!");
+                return true;
+            }
+        } else {
+            target = sender;
+            try {index = Integer.parseInt(args[1]);} 
+            catch (Exception e) {
+                Utils.sendMessage(sender, "&cEntered index must be an integer!");
+                return true;
+            }
+        }
+
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        UUID uuid = target.getUniqueId();
+        int i = 1;
+        for (Shop shop : dsMap.values()) {
+            if (shop.getShopItem()==null) continue;
+            if (shop.getOwnerUniqueId()==null || !shop.getOwnerUniqueId().equals(uuid)) continue;
+
+            if (i==index) {
+                double x=shop.getBaseLocation().getX(), y=shop.getBaseLocation().getY(), z=shop.getBaseLocation().getZ();
+                String world=shop.getBaseLocation().getWorldName();
+
+                Utils.teleportPlayer(sender, world, x, y+1, z);
+                return true;
+            } else ++i;
+
+        } if (i<1) Utils.sendMessage(sender, "&cCouldn't find that shop!");
+        return true;
+    }
+
+    /**
+     * Handles the sub command for storing inventory items into display shops.
+     * 
+     * @param player the command sender
+     * @return true if command was processed successfully
+     */
+    private boolean handleStoreInvCmd(Player player) {
+        int MAX_STOCK = configHandler.getDSMaxStoredStock();
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        UUID uuid = player.getUniqueId();
+        int transactionCount = 0, shops_affected = 0;
+
+        itemStackFor:
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack == null) continue;
+
+            Material invMat = itemStack.getType();
+            MaterialData invData = itemStack.getData();
+            ItemMeta invMeta = itemStack.getItemMeta();
+            int invAmount = itemStack.getAmount();
+            int shopIndex = 0;
+
+            for (Shop shop : dsMap.values()) {
+                ItemStack item = shop.getShopItem();
+                if (item==null) continue;
+                if (shop.getOwnerUniqueId()==null || !shop.getOwnerUniqueId().equals(uuid)) continue;
+                ++shopIndex;
+                if (item.getType()==null || !item.getType().equals(invMat)) continue;
+                if (item.getData()==null || !item.getData().equals(invData)) continue;
+                if (item.getItemMeta()==null || !item.getItemMeta().equals(invMeta)) continue;
+
+                // move inv -> shop
+                int potential_deposit_all = shop.getStock() + invAmount;
+                if (shop.getStock()>=MAX_STOCK) {
+                    Utils.sendMessage(player, "&c" + shop.getShopItem().getType().toString().toLowerCase() + " &7shop @ "
+                    + shop.getBaseLocation().getWorldName() + ": " + shop.getBaseLocation().getX() + ", "
+                    + shop.getBaseLocation().getY() + ", " + shop.getBaseLocation().getZ() + " &cstock is full! &7Teleport to it with &f/shop tp " + shopIndex);
+                } else if (potential_deposit_all>MAX_STOCK) {
+                    int leftover_amount = Math.max(invAmount-(MAX_STOCK-shop.getStock()), 0);
+                    itemStack.setAmount(leftover_amount);
+                    shop.setStock(MAX_STOCK);
+                    transactionCount+=invAmount-leftover_amount;
+                    ++shops_affected;
+                    
+                } else {
+                    itemStack.setAmount(0);
+                    shop.setStock(potential_deposit_all);
+                    transactionCount+=invAmount;
+                    ++shops_affected;
+                    continue itemStackFor;
+                }
+            }
+        }
+        
+        if (transactionCount<1) Utils.sendMessage(player, "&cCouldn't find any applicable shops for your inv items!");
+        else Utils.sendMessage(player, "&aStored a total of " + transactionCount + " items into " + shops_affected + " of your shops!");
+
         return true;
     }
 
@@ -195,7 +331,8 @@ public class ShopCmd implements TabExecutor {
             }
 
             if (potential_deposit_per>max_possible_deposit_per) {
-                Utils.sendMessage(player, "&fYou can not afford to deposit $" + potential_deposit_per + " into each of your display shops. Using $" + max_possible_deposit_per + " instead (max based on your pocket balance & shop count).");
+                Utils.sendMessage(player, "&fYou can not afford to deposit $" + potential_deposit_per + " into each of your display shops. Using $" 
+                                    + max_possible_deposit_per + " instead (max based on your pocket balance & shop count).");
                 deposit_per = max_possible_deposit_per;
             } else deposit_per = potential_deposit_per;
         }
@@ -206,7 +343,7 @@ public class ShopCmd implements TabExecutor {
         for (Shop shop : dsMap.values()) {
             // confirm shop belongs to target
             if (shop.getShopItem()==null) continue;
-            if (shop.getOwnerUniqueId() != uuid) continue;
+            if (shop.getOwnerUniqueId()==null || !shop.getOwnerUniqueId().equals(uuid)) continue;
             else {
                 // caculate amount to set
                 double stored_balance = shop.getStoredBalance(), deposit_amount;
@@ -215,11 +352,13 @@ public class ShopCmd implements TabExecutor {
                     deposit_amount = configHandler.getDSMaxStoredBalance()-stored_balance;
                 else deposit_amount = deposit_per;
 
-                shop.setStoredBalance(stored_balance+deposit_amount);
-                amount_deposited += deposit_amount;
-                ++shops_affected;
+                if (removeMoney(player, deposit_amount)) {
+                    shop.setStoredBalance(stored_balance+deposit_amount);
+                    amount_deposited += deposit_amount;
+                    ++shops_affected;
+                }
             }
-        } removeMoney(player, amount_deposited);
+        }
 
         Utils.sendMessage(player, "&aDeposited a total of $" + amount_deposited + " into " + shops_affected + " of your shops!");
         return true;
@@ -269,7 +408,7 @@ public class ShopCmd implements TabExecutor {
         for (Shop shop : dsMap.values()) {
             // confirm shop belongs to target
             if (shop.getShopItem()==null) continue;
-            if (shop.getOwnerUniqueId() != uuid) continue;
+            if (shop.getOwnerUniqueId()==null || !shop.getOwnerUniqueId().equals(uuid)) continue;
             else {
                 // caculate amount to set
                 double stored_balance = shop.getStoredBalance(), withdraw_amount;
@@ -280,11 +419,13 @@ public class ShopCmd implements TabExecutor {
                     withdraw_amount = stored_balance;
                 else withdraw_amount = withdraw_per;
 
-                shop.setStoredBalance(stored_balance-withdraw_amount);
-                amount_withdrew += withdraw_amount;
-                ++shops_affected;
+                if (addMoney(player, withdraw_amount)) {
+                    shop.setStoredBalance(stored_balance-withdraw_amount);
+                    amount_withdrew += withdraw_amount;
+                    ++shops_affected;
+                }
             }
-        } addMoney(player, amount_withdrew);
+        }
 
         Utils.sendMessage(player, "&aWithdrew a total of $" + amount_withdrew + " from " + shops_affected + " of your shops!");
         return true;
@@ -371,7 +512,7 @@ public class ShopCmd implements TabExecutor {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
             list.clear();
-            String[] subCmds = new String[]{"[item name]","help","buy","advertise","deposit-all","withdraw-all"};
+            String[] subCmds = new String[]{"[item name]","help","buy","advertise","deposit-all","withdraw-all","store-inv","list","tp"};
             for (String n : subCmds) {
                 if (n!=null && n.startsWith(args[0])) 
                     list.add(n);
@@ -381,6 +522,17 @@ public class ShopCmd implements TabExecutor {
                 list.add("<#>");
                 list.add("max");
             } if (args[0].equals("buy")) {
+                list.add("<#>");
+            } if (args[0].equals("list")) {
+                Bukkit.getOnlinePlayers().forEach(player -> list.add(player.getName()));
+            } if (args[0].equals("tp")) {
+                list.add("<#>");
+                if (args[1].startsWith("-")) {
+                    Bukkit.getOnlinePlayers().forEach(player -> list.add("-"+player.getName()));
+                }
+            } 
+        } else if (args.length == 3) {
+            if (args[0].equals("tp")) {
                 list.add("<#>");
             } 
         }

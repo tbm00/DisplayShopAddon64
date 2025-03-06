@@ -7,6 +7,7 @@ public class ConfigHandler {
     private String chatPrefix;
     private boolean featureEnabled = false;
     private int dsMaxStoredBalance;
+    private int dsMaxStoredStock;
     private String guiDefaultCategory;
 
     /**
@@ -42,6 +43,7 @@ public class ConfigHandler {
         if (section!=null) {
             featureEnabled = section.contains("enabled") ? section.getBoolean("enabled") : false;
             dsMaxStoredBalance = section.contains("dsMaxStoredBalance") ? section.getInt("dsMaxStoredBalance") : 20000000;
+            dsMaxStoredStock = section.contains("dsMaxStoredStock") ? section.getInt("dsMaxStoredStock") : 8192;
             guiDefaultCategory = section.contains("guiDefaultCategory") ? section.getString("guiDefaultCategory") : "shoppog";
         }
     }
@@ -56,6 +58,10 @@ public class ConfigHandler {
 
     public int getDSMaxStoredBalance() {
         return dsMaxStoredBalance;
+    }
+
+    public int getDSMaxStoredStock() {
+        return dsMaxStoredStock;
     }
 
     public String getGUIDefaultCategory() {

@@ -1,7 +1,12 @@
 package dev.tbm00.spigot.displayshopaddon64;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -11,6 +16,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 public class Utils {
     private static DisplayShopAddon64 javaPlugin;
     private static ConfigHandler configHandler;
+    public static final List<String> pendingTeleports = new CopyOnWriteArrayList<>();
 
     public static void init(DisplayShopAddon64 javaPlugin, ConfigHandler configHandler) {
         Utils.javaPlugin = javaPlugin;
@@ -25,10 +31,10 @@ public class Utils {
      */
     public static void log(ChatColor chatColor, String... strings) {
 		for (String s : strings)
-            javaPlugin.getServer().getConsoleSender().sendMessage("[DisplayShopAddon64] " + chatColor + s);
+            javaPlugin.getServer().getConsoleSender().sendMessage("[DSA64] " + chatColor + s);
 	}
 
-        /**
+    /**
      * Retrieves a player by their name.
      * 
      * @param arg the name of the player to retrieve
@@ -90,5 +96,43 @@ public class Utils {
             log(ChatColor.RED, "Caught exception sudoing command: " + target.getName() + " : /" + command + ": " + e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Teleports a player to the given world and coordinates after a 5-second delay.
+     * If the player moves during the delay, the teleport is cancelled.
+     *
+     * @param player the player to teleport
+     * @param worldName the target world's name
+     * @param x target x-coordinate
+     * @param y target y-coordinate
+     * @param z target z-coordinate
+     * @return true if the teleport countdown was started, false if the player was already waiting
+     */
+    public static boolean teleportPlayer(Player player, String worldName, double x, double y, double z) {
+        String playerName = player.getName();
+        if (pendingTeleports.contains(playerName)) {
+            sendMessage(player, "&cYou are already waiting for a teleport!");
+            return false;
+        }
+        pendingTeleports.add(playerName);
+        sendMessage(player, "&aTeleporting in 3 seconds -- don't move!");
+
+        // Schedule the teleport to run later
+        Bukkit.getScheduler().runTaskLater(javaPlugin, () -> {
+            if (pendingTeleports.contains(playerName)) {
+                // Remove player from pending list and teleport
+                pendingTeleports.remove(playerName);
+                World targetWorld = Bukkit.getWorld(worldName);
+                if (targetWorld != null) {
+                    Location targetLocation = new Location(targetWorld, x, y, z);
+                    player.teleport(targetLocation);
+                } else {
+                    sendMessage(player, "&cWorld not found!");
+                }
+            }
+        }, 60L);
+
+        return true;
     }
 }

@@ -12,7 +12,7 @@ import xzot1k.plugins.ds.DisplayShopsAPI;
 import net.milkbowl.vault.economy.Economy;
 
 import dev.tbm00.spigot.displayshopaddon64.command.ShopCmd;
-import dev.tbm00.spigot.displayshopaddon64.listener.PlayerConnection;
+import dev.tbm00.spigot.displayshopaddon64.listener.PlayerMovement;
 
 public class DisplayShopAddon64 extends JavaPlugin {
     private ConfigHandler configHandler;
@@ -38,7 +38,7 @@ public class DisplayShopAddon64 extends JavaPlugin {
 
             if (configHandler.isFeatureEnabled()) {
                 // Register Listener
-                getServer().getPluginManager().registerEvents(new PlayerConnection(configHandler), this);
+                getServer().getPluginManager().registerEvents(new PlayerMovement(), this);
                 
                 // Register Command
                 getCommand("testshop").setExecutor(new ShopCmd(configHandler));
