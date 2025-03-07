@@ -1,5 +1,5 @@
 # DisplayShopAddon64
-A spigot plugin that expands DisplayShops and CommandPanels for MC64.
+A spigot plugin that expands DisplayShops and adds user-friendly, but powerful GUIs.
 
 Created by tbm00 for play.mc64.wtf.
 
@@ -7,39 +7,47 @@ Created by tbm00 for play.mc64.wtf.
 ## Dependencies
 - **Java 17+**: REQUIRED
 - **Spigot 1.18.1+**: UNTESTED ON OLDER VERSIONS
+- **DisplayShops**: REQUIRED
+- **Vault**: REQUIRED
+- **Rep64**: REQUIRED
 
 
 ## Commands
-#### Player Commands
+#### Shopper Commands 
+- testshop
+  - `/testshop` Open shop category GUI
+  - `/testshop [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/testshop [item/player]` Open GUI with all shops matching player/item
+- buy
+  - `/buy` Open shop category GUI
+  - `/buy [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/buy [item/player]` Open GUI with all shops matching player/item
+- sell
+  - `/sell` Open shop category GUI
+  - `/sell [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/sell [item/player]` Open GUI with all shops matching player/item
+
+#### Shop Owner Commands
 - `/testshop help` Display help menu
-- `/testshop` Open shop category gui
-- `/testshop [pog/ores/tools/blocks/drops/food/farming]` Open shop category GUI
-- `/testshop [random item name]` Search all player shops
-- `/testshop buy <#>` Buy shop creation item
-- `/testshop advertise` Broadcast shop to all players
-- `/testshop list` Get a list of all your shops
-- `/testshop list <player>` Get a list of someone else's shops
-- `/testshop tp <#>` Teleport to one of your shops
-- `/testshop tp -<player> <#>` Teleport to someone else's shops
+- `/testshop buy <#>` Buy shop creation item(s)
+- `/testshop list` Open your shop list & manage GUI
+- `/testshop advertise` Broadcast the shop you're looking at
 - `/testshop store-inv` Deposit all appicable items from your inv into your shops
 - `/testshop deposit-all max/<#>` Deposit money into all your shops
 - `/testshop withdraw-all max/<#>` Withdraw money from all your shops
 
-#### Admin Commands
-- none
-
 
 ## Permissions
 #### Player Permissions
-- `displayshopaddon64.player` Ability to use player features *(default: everyone)*
+- `displayshopaddon64.player` Ability to use /testshop, /buy, & /sell *(default: everyone)*
 
 #### Admin Permissions
-- `displayshopaddon64.admin` Ability to use admin features *(default: op)*
+- `displayshopaddon64.admin` Ability to use __________ *(default: op)*
 
 
 ## Config
 ```
-# DisplayShopAddon64 v0.0.2-beta by @tbm00
+# DisplayShopAddon64 v0.0.3-beta by @tbm00
 # https://github.com/tbm00/DisplayShopAddon64
 
 enabled: true
@@ -50,5 +58,7 @@ lang:
 feature:
   enabled: true
   dsMaxStoredBalance: 20000000
+  dsMaxStoredStock: 8192
   guiDefaultCategory: "shoppog"
+  dsDescChange: true
 ```

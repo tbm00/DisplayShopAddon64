@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import dev.tbm00.spigot.displayshopaddon64.Utils;
+import dev.tbm00.spigot.displayshopaddon64.utils.Utils;
 
 public class PlayerMovement implements Listener {
 
@@ -18,7 +18,7 @@ public class PlayerMovement implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         if (Utils.pendingTeleports.contains(event.getPlayer().getName())) {
             Utils.pendingTeleports.remove(event.getPlayer().getName());
-            Utils.sendMessage(event.getPlayer(), "&cCountdown cancelled, you moved!");
+            Utils.sendMessage(event.getPlayer(), "&cTeleport countdown cancelled -- you moved!");
         }
     }
 }

@@ -9,6 +9,7 @@ public class ConfigHandler {
     private int dsMaxStoredBalance;
     private int dsMaxStoredStock;
     private String guiDefaultCategory;
+    private boolean dsDescChange = false;
 
     /**
      * Constructs a ConfigHandler instance.
@@ -45,6 +46,7 @@ public class ConfigHandler {
             dsMaxStoredBalance = section.contains("dsMaxStoredBalance") ? section.getInt("dsMaxStoredBalance") : 20000000;
             dsMaxStoredStock = section.contains("dsMaxStoredStock") ? section.getInt("dsMaxStoredStock") : 8192;
             guiDefaultCategory = section.contains("guiDefaultCategory") ? section.getString("guiDefaultCategory") : "shoppog";
+            dsDescChange = section.contains("dsDescChange") ? section.getBoolean("dsDescChange") : false;
         }
     }
 
@@ -64,7 +66,11 @@ public class ConfigHandler {
         return dsMaxStoredStock;
     }
 
-    public String getGUIDefaultCategory() {
+    public String getGuiDefaultCategory() {
         return guiDefaultCategory;
+    }
+
+    public boolean isDsDescChanged() {
+        return dsDescChange;
     }
 }

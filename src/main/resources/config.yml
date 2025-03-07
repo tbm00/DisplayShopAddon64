@@ -1,4 +1,4 @@
-# DisplayShopAddon64 v0.0.2-beta by @tbm00
+# DisplayShopAddon64 v0.0.3-beta by @tbm00
 # https://github.com/tbm00/DisplayShopAddon64
 
 enabled: true
@@ -11,3 +11,4 @@ feature:
   dsMaxStoredBalance: 20000000
   dsMaxStoredStock: 8192
   guiDefaultCategory: "shoppog"
+  dsDescChange: true

@@ -1,23 +1,29 @@
 package dev.tbm00.spigot.displayshopaddon64;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.milkbowl.vault.economy.Economy;
+
 import xzot1k.plugins.ds.DisplayShops;
 import xzot1k.plugins.ds.DisplayShopsAPI;
 
-import net.milkbowl.vault.economy.Economy;
+import dev.tbm00.spigot.rep64.Rep64;
 
-import dev.tbm00.spigot.displayshopaddon64.command.ShopCmd;
+import dev.tbm00.spigot.displayshopaddon64.utils.*;
+import dev.tbm00.spigot.displayshopaddon64.command.*;
 import dev.tbm00.spigot.displayshopaddon64.listener.PlayerMovement;
+import dev.tbm00.spigot.displayshopaddon64.task.DescChange;
 
 public class DisplayShopAddon64 extends JavaPlugin {
     private ConfigHandler configHandler;
     public static DisplayShopsAPI dsHook;
     public static Economy ecoHook;
+    public static Rep64 repHook;
 
     @Override
     public void onEnable() {
@@ -28,6 +34,8 @@ public class DisplayShopAddon64 extends JavaPlugin {
             configHandler = new ConfigHandler(this);
 
             Utils.init(this, configHandler);
+            ShopUtils.init(this);
+            
             Utils.log(ChatColor.LIGHT_PURPLE,
                     ChatColor.DARK_PURPLE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-",
                     pdf.getName() + " v" + pdf.getVersion() + " created by tbm00",
@@ -41,7 +49,12 @@ public class DisplayShopAddon64 extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(new PlayerMovement(), this);
                 
                 // Register Command
-                getCommand("testshop").setExecutor(new ShopCmd(configHandler));
+                getCommand("testshop").setExecutor(new ShopCmd(this, configHandler));
+                getCommand("buy").setExecutor(new BuyCmd(this, configHandler));
+
+                if (configHandler.isDsDescChanged()) {
+                    new DescChange();
+                }
             }
         }
     }
@@ -59,6 +72,12 @@ public class DisplayShopAddon64 extends JavaPlugin {
 
         if (!setupVault()) {
             getLogger().severe("Vault hook failed -- disabling plugin!");
+            disablePlugin();
+            return;
+        }
+
+        if (!setupRep64()) {
+            getLogger().severe("Rep64 hook failed -- disabling plugin!");
             disablePlugin();
             return;
         }
@@ -92,6 +111,23 @@ public class DisplayShopAddon64 extends JavaPlugin {
         if (ecoHook == null) return false;
 
         Utils.log(ChatColor.GREEN, "Vault hooked.");
+        return true;
+    }
+
+    /**
+     * Attempts to hook into the Rep64 plugin.
+     *
+     * @return true if the hook was successful, false otherwise.
+     */
+    private boolean setupRep64() {
+        if (!isPluginAvailable("Rep64")) return false;
+
+        Plugin logger = Bukkit.getPluginManager().getPlugin("Rep64");
+        if (logger.isEnabled() && logger instanceof Rep64)
+            repHook = (Rep64) logger;
+        else return false;
+
+        Utils.log(ChatColor.GREEN, "Rep64 hooked.");
         return true;
     }
 
