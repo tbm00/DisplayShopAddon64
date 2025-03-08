@@ -34,7 +34,8 @@ public class DisplayShopAddon64 extends JavaPlugin {
             configHandler = new ConfigHandler(this);
 
             Utils.init(this, configHandler);
-            ShopUtils.init(this);
+            ShopUtils.init(this, configHandler);
+            GuiUtils.init(this);
             
             Utils.log(ChatColor.LIGHT_PURPLE,
                     ChatColor.DARK_PURPLE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-",
@@ -48,9 +49,12 @@ public class DisplayShopAddon64 extends JavaPlugin {
                 // Register Listener
                 getServer().getPluginManager().registerEvents(new PlayerMovement(), this);
                 
-                // Register Command
+                // Register Commands
                 getCommand("testshop").setExecutor(new ShopCmd(this, configHandler));
-                getCommand("buy").setExecutor(new BuyCmd(this, configHandler));
+                getCommand("testbuy").setExecutor(new BuyCmd(configHandler));
+                getCommand("testsell").setExecutor(new SellCmd(this, configHandler));
+                getCommand("testsellgui").setExecutor(new SellGuiCmd(this));
+                getCommand("testsellinv").setExecutor(new SellInvCmd());
 
                 if (configHandler.isDsDescChanged()) {
                     new DescChange();
@@ -122,9 +126,9 @@ public class DisplayShopAddon64 extends JavaPlugin {
     private boolean setupRep64() {
         if (!isPluginAvailable("Rep64")) return false;
 
-        Plugin logger = Bukkit.getPluginManager().getPlugin("Rep64");
-        if (logger.isEnabled() && logger instanceof Rep64)
-            repHook = (Rep64) logger;
+        Plugin rep64 = Bukkit.getPluginManager().getPlugin("Rep64");
+        if (rep64.isEnabled() && rep64 instanceof Rep64)
+            repHook = (Rep64) rep64;
         else return false;
 
         Utils.log(ChatColor.GREEN, "Rep64 hooked.");

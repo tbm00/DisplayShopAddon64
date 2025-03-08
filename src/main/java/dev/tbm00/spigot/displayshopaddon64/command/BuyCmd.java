@@ -14,22 +14,19 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.ConfigHandler;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
 
 public class BuyCmd implements TabExecutor {
-    //private final DisplayShopAddon64 javaPlugin;
     private final ConfigHandler configHandler;
     private final String PLAYER_PERM = "displayshopaddon64.player";
 
-    public BuyCmd(DisplayShopAddon64 javaPlugin, ConfigHandler configHandler) {
-        //this.javaPlugin = javaPlugin;
+    public BuyCmd(ConfigHandler configHandler) {
         this.configHandler = configHandler;
     }
 
     /**
-     * Handles the /buy & /sell commands.
+     * Handles the /testbuy & command.
      * 
      * @param player the command sender
      * @param consoleCommand the command being executed
@@ -69,7 +66,7 @@ public class BuyCmd implements TabExecutor {
             case "gui":
                 return ShopUtils.handleGuiCmd(player);
             default:
-                return ShopUtils.handleSearch(player, args);
+                return ShopUtils.handleSearch(player, args, 2);
         }
     }
     
@@ -81,22 +78,22 @@ public class BuyCmd implements TabExecutor {
      */
     private boolean handleHelpCmd(Player player, String alias) {
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
-            + ChatColor.WHITE + "/" + alias + "" + ChatColor.GRAY + " Open shop category GUI\n"
-            + ChatColor.WHITE + "/" + alias + " [item]" + ChatColor.GRAY + " Find all [item] shops\n"
-            + ChatColor.WHITE + "/" + alias + " [player]" + ChatColor.GRAY + " Find all [player]'s shops"
+            + ChatColor.WHITE + "/testbuy" + ChatColor.GRAY + " Open shop category GUI\n"
+            + ChatColor.WHITE + "/testbuy [item]" + ChatColor.GRAY + " Find all [item] shops you can buy from\n"
+            + ChatColor.WHITE + "/testbuy [player]" + ChatColor.GRAY + " Find all [player]'s shops you can buy from"
         );
         return true;
     }
 
     /**
-     * Handles tab completion for the /buy & /sell commands.
+     * Handles tab completion for the /testbuy command.
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
             list.clear();
-            String[] subCmds = new String[]{"[item]","[player]","help"};
+            String[] subCmds = new String[]{"[item]","[player]"};
             for (String n : subCmds) {
                 if (n!=null && n.startsWith(args[0])) 
                     list.add(n);

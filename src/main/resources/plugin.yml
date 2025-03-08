@@ -8,12 +8,19 @@ depend: [DisplayShops, Vault, Rep64]
 commands:
   testshop:
     description: Main command for DisplayShopAddon64
-  buy:
-    description: Alternate commands for DisplayShopAddon64
-    aliases: [sell]
+  testbuy:
+    description: Additional command for DisplayShopAddon64
+  testsell:
+    description: Additional command for DisplayShopAddon64
+  testsellinv:
+    description: Additional command for DisplayShopAddon64
+    aliases: [testsellall]
+  testsellgui:
+    description: Additional command for DisplayShopAddon64
+    aliases: [testsellg, testsg]
 permissions:
   displayshopaddon64.player:
-    description: Ability to use /testshop, /buy, & /sell
+    description: Ability to use player commands
     default: true
   displayshopaddon64.admin:
     description: Ability to use __________

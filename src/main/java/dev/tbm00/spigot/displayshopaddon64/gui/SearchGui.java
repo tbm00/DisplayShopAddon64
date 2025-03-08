@@ -13,12 +13,12 @@ import net.wesjd.anvilgui.AnvilGUI;
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.utils.ShopUtils;
 
-public class AnvilGui {
+public class SearchGui {
     
     /**
      * Creates an anvil gui for player to enter text and search shops with.
      */
-    public AnvilGui(DisplayShopAddon64 javaPlugin, Player player) {
+    public SearchGui(DisplayShopAddon64 javaPlugin, Player player) {
         ItemStack leftItem = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         ItemMeta leftMeta = leftItem.getItemMeta();
         leftMeta.setDisplayName(" ");
@@ -47,7 +47,7 @@ public class AnvilGui {
 
                 return Arrays.asList(
                     AnvilGUI.ResponseAction.close(),
-                    AnvilGUI.ResponseAction.run(() -> ShopUtils.handleSearch(player, arr))
+                    AnvilGUI.ResponseAction.run(() -> ShopUtils.handleSearch(player, arr, 0))
                 );
             })
             .text(" ")

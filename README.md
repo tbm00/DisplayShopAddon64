@@ -18,14 +18,20 @@ Created by tbm00 for play.mc64.wtf.
   - `/testshop` Open shop category GUI
   - `/testshop [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
   - `/testshop [item/player]` Open GUI with all shops matching player/item
-- buy
-  - `/buy` Open shop category GUI
-  - `/buy [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/buy [item/player]` Open GUI with all shops matching player/item
-- sell
-  - `/sell` Open shop category GUI
-  - `/sell [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/sell [item/player]` Open GUI with all shops matching player/item
+- testbuy
+  - `/testbuy` Open shop category GUI
+  - `/testbuy [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/testbuy [item/player]` Open GUI with all buy-able shops matching player/item
+- testsell
+  - `/testsell` Open shop category GUI
+  - `/testsell [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/testsell [item/player]` Open GUI with all sell-able shops matching player/item
+  - `/testsell inv <#>` Sell all items in your inv for a minimum of $<#> each
+  - `/testsell gui <#>` Open a GUI and sell items for a minimum of $<#> each
+- testsellinv - alias: testsellall
+  - `/testsellinv <#>` Sell all items in your inv for a minimum of $<#> each
+- testsellgui - alias: testsellg, testsg
+  - `/testsellgui <#>` Open a GUI and sell items for a minimum of $<#> each
 
 #### Shop Owner Commands
 - `/testshop help` Display help menu
@@ -39,7 +45,7 @@ Created by tbm00 for play.mc64.wtf.
 
 ## Permissions
 #### Player Permissions
-- `displayshopaddon64.player` Ability to use /testshop, /buy, & /sell *(default: everyone)*
+- `displayshopaddon64.player` Ability to use player commands *(default: everyone)*
 
 #### Admin Permissions
 - `displayshopaddon64.admin` Ability to use __________ *(default: op)*
@@ -47,7 +53,7 @@ Created by tbm00 for play.mc64.wtf.
 
 ## Config
 ```
-# DisplayShopAddon64 v0.0.3-beta by @tbm00
+# DisplayShopAddon64 v0.0.4-beta by @tbm00
 # https://github.com/tbm00/DisplayShopAddon64
 
 enabled: true

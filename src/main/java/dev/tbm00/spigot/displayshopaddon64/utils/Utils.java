@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -97,6 +99,7 @@ public class Utils {
      * @return true if the sender has the permission, false otherwise
      */
     public static boolean hasPermission(CommandSender sender, String perm) {
+        if (sender instanceof Player && ((Player)sender).getGameMode()==GameMode.CREATIVE) return false;
         return sender.hasPermission(perm) || sender instanceof ConsoleCommandSender;
     }
 
@@ -109,6 +112,19 @@ public class Utils {
     public static void sendMessage(CommandSender target, String string) {
         if (!string.isBlank())
             target.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', configHandler.getChatPrefix() + string)));
+    }
+
+    /**
+     * Gives a player an ItemStack.
+     * If they have a full inv, it drops on the ground.
+     * 
+     * @param player the player to give to
+     * @param item the item to give
+     */
+    public static void giveItem(Player player, ItemStack item) {
+        if ((player.getInventory().firstEmpty() == -1)) {
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
+        } else player.getInventory().addItem(item);
     }
 
     /**

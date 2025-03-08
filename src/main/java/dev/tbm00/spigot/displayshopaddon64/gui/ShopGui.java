@@ -24,15 +24,17 @@ public class ShopGui {
     PaginatedGui gui;
     String label;
     
-    public ShopGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player sender) {
+    public ShopGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player player) {
         this.javaPlugin = javaPlugin;
         label = "All Shops: Page ";
         gui = new PaginatedGui(6, 45, "All Shops");
-
+        
+        fillShops(dsMap, player);
         setupFooter();
-        fillShops(dsMap, sender);
+
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
-        gui.open(sender);
+        gui.disableAllInteractions();
+        gui.open(player);
     }
 
     /**
@@ -40,9 +42,9 @@ public class ShopGui {
      * Each shop that has a valid shop item and pricing information is converted into a clickable GUI item.
      *
      * @param dsMap a concurrent hash map of shop identifiers to Shop objects
-     * @param sender the player for whom the GUI is being built
+     * @param player the player for whom the GUI is being built
      */
-    private void fillShops(ConcurrentHashMap<String, Shop> dsMap, Player sender) {
+    private void fillShops(ConcurrentHashMap<String, Shop> dsMap, Player player) {
         for (Shop shop : dsMap.values()) {
             /*check if valid & active shop*/ 
                 if (shop.getShopItem()==null) continue; // if no shop item
@@ -61,7 +63,7 @@ public class ShopGui {
                 String priceLine = "", name=null;
                 UUID uuid = shop.getOwnerUniqueId();
 
-                ShopUtils.addGuiItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, sender);
+                GuiUtils.addGuiItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, player);
         }
     }
 
@@ -74,19 +76,19 @@ public class ShopGui {
         List<String> lore = new ArrayList<>();
 
         // Category: Pog
-        ShopUtils.setGuiItemCatPog(gui, item, meta, lore);
+        GuiUtils.setGuiItemCatPog(gui, item, meta, lore);
 
         // Category: Blocks
-        ShopUtils.setGuiItemCatBlocks(gui, item, meta, lore);
+        GuiUtils.setGuiItemCatBlocks(gui, item, meta, lore);
 
         // Category: Food
-        ShopUtils.setGuiItemCatFood(gui, item, meta, lore);
+        GuiUtils.setGuiItemCatFood(gui, item, meta, lore);
 
         // Category: Drops
-        ShopUtils.setGuiItemCatDrops(gui, item, meta, lore);
+        GuiUtils.setGuiItemCatDrops(gui, item, meta, lore);
 
         // Category: Ores
-        ShopUtils.setGuiItemCatOres(gui, item, meta, lore);
+        GuiUtils.setGuiItemCatOres(gui, item, meta, lore);
 
         // Category: All
         lore.add("&8-----------------------");
@@ -99,12 +101,14 @@ public class ShopGui {
         lore.clear();
 
         // Previous Page
-        ShopUtils.setGuiItemPageBack(gui, item, meta, lore, label);
+        if (gui.getPagesNum()>=2) GuiUtils.setGuiItemPageBack(gui, item, meta, lore, label);
+        else gui.setItem(6, 7, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Next Page
-        ShopUtils.setGuiItemPageNext(gui, item, meta, lore, label);
+        if (gui.getPagesNum()>=2)  GuiUtils.setGuiItemPageNext(gui, item, meta, lore, label);
+        else gui.setItem(6, 8, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Search
-        ShopUtils.setGuiItemSearch(gui, item, meta, lore);
+        GuiUtils.setGuiItemSearch(gui, item, meta, lore);
     }
 }
