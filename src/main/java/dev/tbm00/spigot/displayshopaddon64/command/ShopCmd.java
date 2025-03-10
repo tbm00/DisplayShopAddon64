@@ -113,8 +113,8 @@ public class ShopCmd implements TabExecutor {
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
             + ChatColor.WHITE + "/testshop " + ChatColor.GRAY + " Open shop category GUI\n"
             + ChatColor.WHITE + "/testshop [item]" + ChatColor.GRAY + " Find all [item] shops\n"
-            + ChatColor.WHITE + "/testshop [player]" + ChatColor.GRAY + " Find all [player]'s shops"
-            + ChatColor.WHITE + "/testsellinv <#>" + ChatColor.GRAY + " Sell all items in your inv for a minimum of $<#> each"
+            + ChatColor.WHITE + "/testshop [player]" + ChatColor.GRAY + " Find all [player]'s shops\n"
+            + ChatColor.WHITE + "/testsellinv <#>" + ChatColor.GRAY + " Sell all items in your inv for a minimum of $<#> each\n"
             + ChatColor.WHITE + "/testsellgui <#>" + ChatColor.GRAY + " Open a GUI and sell items for a minimum of $<#> each"
         );
         return true;
