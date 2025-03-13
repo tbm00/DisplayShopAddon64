@@ -55,8 +55,8 @@ public class PlayerResultsGui {
                                                 continue; // if owner is not a match
                 double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false);
                 if (buyPrice<0 && sellPrice<0) continue; // if buy & sell are both disabled
-                if (queryType==1 && buyPrice<0) continue; // if searching for buy shops and buy is disabled
-                if (queryType==2 && sellPrice<0) continue; // if searching for buy shops and sell is disabled
+                //if (queryType==1 && buyPrice<0) continue; // if searching for buy shops and buy is disabled
+                //if (queryType==2 && sellPrice<0) continue; // if searching for buy shops and sell is disabled
                 
             /*define item button's lore, name, etc. and add to gui*/
                 ItemStack item = shop.getShopItem().clone();

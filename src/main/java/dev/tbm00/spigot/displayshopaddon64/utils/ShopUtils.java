@@ -60,7 +60,7 @@ public class ShopUtils {
      * @param sender the command sender
      * @param args the arguments passed to the command
      * @param queryType the type of query 0="shop", 1="buy", 2="sell"
-     * @return true if command was processed successfully
+     * @return true if task was processed successfully
      */
     public static boolean handleSearch(Player sender, String[] args, int queryType) {
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
@@ -97,7 +97,7 @@ public class ShopUtils {
      * 
      * @param sender the command sender
      * @param args the arguments passed to the command
-     * @return true if command was processed successfully
+     * @return true if task was processed successfully
      */
     public static boolean handleAdminSearch(Player sender, String[] args) {
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();

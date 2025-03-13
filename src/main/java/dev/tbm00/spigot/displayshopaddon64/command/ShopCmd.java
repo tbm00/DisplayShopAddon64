@@ -30,6 +30,8 @@ public class ShopCmd implements TabExecutor {
     private final DisplayShopAddon64 javaPlugin;
     private final ConfigHandler configHandler;
     private final String PLAYER_PERM = "displayshopaddon64.player";
+    private final String STORE_PERM = "displayshopaddon64.player.store-inv";
+    private final String MONEY_PERM = "displayshopaddon64.player.money-move";
 
     public ShopCmd(DisplayShopAddon64 javaPlugin, ConfigHandler configHandler) {
         this.javaPlugin = javaPlugin;
@@ -179,6 +181,11 @@ public class ShopCmd implements TabExecutor {
      * @return true if command was processed successfully
      */
     private boolean handleStoreInvCmd(Player player) {
+        if (!Utils.hasPermission(player, STORE_PERM)) {
+            Utils.sendMessage(player, "&cNo permission!");
+            return true;
+        }
+
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
         int MAX_STOCK = configHandler.getDSMaxStoredStock();
         UUID uuid = player.getUniqueId();
@@ -236,6 +243,11 @@ public class ShopCmd implements TabExecutor {
      * @return true if command was processed successfully
      */
     private boolean handleDepositCmd(Player player, String[] args) {
+        if (!Utils.hasPermission(player, MONEY_PERM)) {
+            Utils.sendMessage(player, "&cNo permission!");
+            return true;
+        }
+
         if (args.length<2) {
             Utils.sendMessage(player, "&f/testshop deposit-all <#>/max &7Deposit money into all your shops");
             return true;
@@ -310,6 +322,11 @@ public class ShopCmd implements TabExecutor {
      * @return true if command was processed successfully
      */
     private boolean handleWithdrawCmd(Player player, String[] args) {
+        if (!Utils.hasPermission(player, MONEY_PERM)) {
+            Utils.sendMessage(player, "&cNo permission!");
+            return true;
+        }
+
         if (args.length<2) {
             Utils.sendMessage(player, "&f/testshop withdraw-all <#>/max &7Withdraw money from all your shops");
             return true;

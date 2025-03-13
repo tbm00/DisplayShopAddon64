@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
 
 public class SellInvCmd implements TabExecutor {
-    private final String PLAYER_PERM = "displayshopaddon64.player";
+    private final String SELL_INV_PERM = "displayshopaddon64.player.sell-inv";
 
     public SellInvCmd() {}
 
@@ -32,7 +32,7 @@ public class SellInvCmd implements TabExecutor {
         if (sender instanceof ConsoleCommandSender) {
             Utils.sendMessage(sender, "&cThis command cannot be run through the console!");
             return true;
-        } else if (!Utils.hasPermission(sender, PLAYER_PERM)) {
+        } else if (!Utils.hasPermission(sender, SELL_INV_PERM)) {
             Utils.sendMessage(sender, "&cNo permission!");
             return true;
         }

@@ -17,7 +17,7 @@ import dev.tbm00.spigot.displayshopaddon64.utils.*;
 
 public class SellGuiCmd implements TabExecutor {
     private final DisplayShopAddon64 javaPlugin;
-    private final String PLAYER_PERM = "displayshopaddon64.player";
+    private final String SELL_GUI_PERM = "displayshopaddon64.player.sell-gui";
 
     public SellGuiCmd(DisplayShopAddon64 javaPlugin) {
         this.javaPlugin = javaPlugin;
@@ -37,14 +37,14 @@ public class SellGuiCmd implements TabExecutor {
         if (sender instanceof ConsoleCommandSender) {
             Utils.sendMessage(sender, "&cThis command cannot be run through the console!");
             return true;
-        } else if (!Utils.hasPermission(sender, PLAYER_PERM)) {
+        } else if (!Utils.hasPermission(sender, SELL_GUI_PERM)) {
             Utils.sendMessage(sender, "&cNo permission!");
             return true;
         }
 
         Player player = (Player) sender;
 
-        return parseSellGuiCmd(player, args);
+        return handleSellGuiCmd(player, args);
     }
 
     /**
@@ -54,7 +54,7 @@ public class SellGuiCmd implements TabExecutor {
      * @param args the arguments passed to the command
      * @return true after creating gui instance
      */
-    private boolean parseSellGuiCmd(Player player, String[] args) {
+    private boolean handleSellGuiCmd(Player player, String[] args) {
         if (args.length<1) {
             Utils.sendMessage(player, "&f/testsellgui <#> &7Open a GUI and sell items for a minimum of $<#> each");
             return true;

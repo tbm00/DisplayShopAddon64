@@ -22,7 +22,7 @@ import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
 
 public class AdminCmd implements TabExecutor {
-    private final String ADMIN_PERM = "displayshopaddon64.admim";
+    private final String ADMIN_PERM = "displayshopaddon64.admin";
 
     public AdminCmd() {}
 
@@ -60,6 +60,8 @@ public class AdminCmd implements TabExecutor {
                 return handlePosCmd(player, subCmd);
             case "paste":
                 return handlePasteCmd(player);
+            case "count":
+                return handleCountCmd(player);
             default:
                 return ShopUtils.handleAdminSearch(player, args);
         }
@@ -74,7 +76,9 @@ public class AdminCmd implements TabExecutor {
     private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shop Admin Commands" + ChatColor.DARK_PURPLE + " ---\n"
             + ChatColor.WHITE + "/testshopadmin <item/player>" + ChatColor.GRAY + " Manage all <item/player> shops\n"
-            + ChatColor.WHITE + "/testshopadmin transfer <playerTo> <playerFrom>" + ChatColor.GRAY + " Change shops' owner"
+            + ChatColor.WHITE + "/testshopadmin transfer <playerTo> <playerFrom>" + ChatColor.GRAY + " Change shops' owner\n"
+            + ChatColor.WHITE + "/testshopadmin [pos1/pos2/copy]" + ChatColor.GRAY + " Set copy positions\n"
+            + ChatColor.WHITE + "/testshopadmin paste" + ChatColor.GRAY + " Set paste position & paste"
         );
         return true;
     }
@@ -145,7 +149,7 @@ public class AdminCmd implements TabExecutor {
     }
 
     /**
-     * Handles the sub command for changing shop coords.
+     * Handles the sub command for changing shop coords in region.
      * 
      * @param sender the command sender
      * @param subCmd the position to save
@@ -177,7 +181,27 @@ public class AdminCmd implements TabExecutor {
             shop.register();
             ++i;
         }
-        Utils.sendMessage(sender, ChatColor.GREEN + "" + i + " shops moved!");
+        Utils.sendMessage(sender, ChatColor.GREEN + "Moved " + i + " shops!");
+        return true;
+    }
+    
+    /**
+     * Handles the sub command for counting shops in region.
+     * 
+     * @param sender the command sender
+     * @param subCmd the position to save
+     * @return true if after processing command
+     */
+    private boolean handleCountCmd(Player sender) {
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        int i = 0;
+        for (Shop shop : dsMap.values()) {
+            LocationClone shopLoc = shop.getBaseLocation();
+            if (!shopLoc.getWorldName().equalsIgnoreCase(ShopUtils.clipboardWorld)) continue;
+            if (!isInRegion(shopLoc.getX(), shopLoc.getY(), shopLoc.getZ())) continue;
+            ++i;
+        }
+        Utils.sendMessage(sender, ChatColor.GREEN + "Found " + i + " shops!");
         return true;
     }
 

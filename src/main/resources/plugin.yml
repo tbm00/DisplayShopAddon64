@@ -24,6 +24,18 @@ permissions:
   displayshopaddon64.player:
     description: Ability to use player commands
     default: true
+  displayshopaddon64.player.money-move:
+    description: Ability to store money into shops with command
+    default: true
+  displayshopaddon64.player.store-inv:
+    description: Ability to store inv items into shops with command
+    default: true
+  displayshopaddon64.player.sell-inv:
+    description: Ability to sell inv items with command
+    default: true
+  displayshopaddon64.player.sell-gui:
+    description: Ability to open sell GUI with command
+    default: true
   displayshopaddon64.admin:
     description: Ability to use admin commands
     default: op

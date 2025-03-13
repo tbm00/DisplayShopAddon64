@@ -45,11 +45,16 @@ Created by tbm00 for play.mc64.wtf.
 #### Admin Commands
 - `/testshopsadmin <player/item>` Manage all <item/player> shops
 - `/testshopsadmin transfer <playerFrom> <playerTo>` Change shops' owner
-
+- `/testshopsadmin [pos1/pos2/copy]` Set copy positions
+- `/testshopsadmin paste` Set paste position & paste
 
 ## Permissions
 #### Player Permissions
 - `displayshopaddon64.player` Ability to use player commands *(default: everyone)*
+- `displayshopaddon64.player.move-money` Ability to store money into shops with command *(default: everyone)*
+- `displayshopaddon64.player.store-inv` Ability to store inv items into shops with command *(default: everyone)*
+- `displayshopaddon64.player.sell-inv` Ability to sell inv items with command *(default: everyone)*
+- `displayshopaddon64.player.sell-gui` Ability to open sell GUI with command *(default: everyone)*
 
 #### Admin Permissions
 - `displayshopaddon64.admin` Ability to use admin commands *(default: op)*

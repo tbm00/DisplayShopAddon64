@@ -60,8 +60,8 @@ public class StringResultsGui {
                 int stock = shop.getStock();
                 if (sellPrice<0 && stock==0) continue; // if sell disabled & no stock to buy
                 if (stock==0 && balance==0) continue; // if no stock & no balance to buy
-                if (queryType==1 && buyPrice<0) continue; // if searching for buy shops and buy is disabled
-                if (queryType==2 && sellPrice<0) continue; // if searching for buy shops and sell is disabled
+                //if (queryType==1 && buyPrice<0) continue; // if searching for buy shops and buy is disabled
+                //if (queryType==2 && sellPrice<0) continue; // if searching for buy shops and sell is disabled
 
             /*check if query matches*/ 
                 boolean include = false; 
