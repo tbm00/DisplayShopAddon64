@@ -91,6 +91,42 @@ public class ShopUtils {
     }
 
     /**
+     * Handles searching the shops by String/player for admins
+     * 
+     * @param sender the command sender
+     * @param args the arguments passed to the command
+     * @return true if command was processed successfully
+     */
+    public static boolean handleAdminSearch(Player sender, String[] args) {
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        // search shops for target player
+        while (args[0].startsWith(" ")) {
+            args[0] = args[0].substring(1);
+        }
+        String targetName = args[0];
+        if (targetName!=null) {
+            new AdminResultsGui(javaPlugin, dsMap, sender, targetName);
+            return true;
+        }
+
+        // search shops for target item String
+        String search = null;
+        int i=0;
+        for (String arg : args) {
+            if (i==0) {
+                search = arg;
+                ++i;
+            } else search = search + " " + arg;
+        }
+
+        if (search==null) return false;
+        search = search.replace("_", " ");
+        
+        new AdminResultsGui(javaPlugin, dsMap, sender, search);
+        return true;
+    }
+
+    /**
      * Handles selling items to any applicable shop
      * 
      * @param player the seller

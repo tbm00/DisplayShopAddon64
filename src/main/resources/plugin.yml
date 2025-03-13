@@ -18,10 +18,12 @@ commands:
   testsellgui:
     description: Additional command for DisplayShopAddon64
     aliases: [testsellg, testsg]
+  testshopadmin:
+    description: Admin commands for DisplayShopAddon64
 permissions:
   displayshopaddon64.player:
     description: Ability to use player commands
     default: true
   displayshopaddon64.admin:
-    description: Ability to use __________
+    description: Ability to use admin commands
     default: op

@@ -86,8 +86,8 @@ public class SellCmd implements TabExecutor {
     private boolean handleHelpCmd(Player player, String alias) {
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
             + ChatColor.WHITE + "/testsell" + ChatColor.GRAY + " Open shop category GUI\n"
-            + ChatColor.WHITE + "/testsell [item]" + ChatColor.GRAY + " Find all [item] shops you can sell to\n"
-            + ChatColor.WHITE + "/testsell [player]" + ChatColor.GRAY + " Find all [player]'s shops you can sell to\n"
+            + ChatColor.WHITE + "/testsell <item>" + ChatColor.GRAY + " Find all <item> shops you can sell to\n"
+            + ChatColor.WHITE + "/testsell <player>" + ChatColor.GRAY + " Find all <player>'s shops you can sell to\n"
             + ChatColor.WHITE + "/testsellinv <#>" + ChatColor.GRAY + " Sell all items in your inv for a minimum of $<#> each\n"
             + ChatColor.WHITE + "/testsellgui <#>" + ChatColor.GRAY + " Open a GUI and sell items for a minimum of $<#> each"
         );
@@ -160,7 +160,7 @@ public class SellCmd implements TabExecutor {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
             list.clear();
-            String[] subCmds = new String[]{"[item]","[player]","inv","gui"};
+            String[] subCmds = new String[]{"<item>","<player>","inv","gui"};
             for (String n : subCmds) {
                 if (n!=null && n.startsWith(args[0])) 
                     list.add(n);

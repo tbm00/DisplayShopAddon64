@@ -79,8 +79,8 @@ public class BuyCmd implements TabExecutor {
     private boolean handleHelpCmd(Player player, String alias) {
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
             + ChatColor.WHITE + "/testbuy" + ChatColor.GRAY + " Open shop category GUI\n"
-            + ChatColor.WHITE + "/testbuy [item]" + ChatColor.GRAY + " Find all [item] shops you can buy from\n"
-            + ChatColor.WHITE + "/testbuy [player]" + ChatColor.GRAY + " Find all [player]'s shops you can buy from"
+            + ChatColor.WHITE + "/testbuy <item>" + ChatColor.GRAY + " Find all <item> shops you can buy from\n"
+            + ChatColor.WHITE + "/testbuy <player>" + ChatColor.GRAY + " Find all <player>'s shops you can buy from"
         );
         return true;
     }
@@ -93,7 +93,7 @@ public class BuyCmd implements TabExecutor {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
             list.clear();
-            String[] subCmds = new String[]{"[item]","[player]"};
+            String[] subCmds = new String[]{"<item>","<player>"};
             for (String n : subCmds) {
                 if (n!=null && n.startsWith(args[0])) 
                     list.add(n);

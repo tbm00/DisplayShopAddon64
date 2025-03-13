@@ -17,15 +17,15 @@ Created by tbm00 for play.mc64.wtf.
 - testshop
   - `/testshop` Open shop category GUI
   - `/testshop [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/testshop [item/player]` Open GUI with all shops matching player/item
+  - `/testshop <item/player>` Open GUI with all shops matching player/item
 - testbuy
   - `/testbuy` Open shop category GUI
   - `/testbuy [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/testbuy [item/player]` Open GUI with all buy-able shops matching player/item
+  - `/testbuy <item/player>` Open GUI with all buy-able shops matching player/item
 - testsell
   - `/testsell` Open shop category GUI
   - `/testsell [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/testsell [item/player]` Open GUI with all sell-able shops matching player/item
+  - `/testsell <item/player>` Open GUI with all sell-able shops matching player/item
   - `/testsell inv <#>` Sell all items in your inv for a minimum of $<#> each
   - `/testsell gui <#>` Open a GUI and sell items for a minimum of $<#> each
 - testsellinv - alias: testsellall
@@ -42,13 +42,17 @@ Created by tbm00 for play.mc64.wtf.
 - `/testshop deposit-all max/<#>` Deposit money into all your shops
 - `/testshop withdraw-all max/<#>` Withdraw money from all your shops
 
+#### Admin Commands
+- `/testshopsadmin <player/item>` Manage all <item/player> shops
+- `/testshopsadmin transfer <playerFrom> <playerTo>` Change shops' owner
+
 
 ## Permissions
 #### Player Permissions
 - `displayshopaddon64.player` Ability to use player commands *(default: everyone)*
 
 #### Admin Permissions
-- `displayshopaddon64.admin` Ability to use __________ *(default: op)*
+- `displayshopaddon64.admin` Ability to use admin commands *(default: op)*
 
 
 ## Config

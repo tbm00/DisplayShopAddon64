@@ -55,6 +55,7 @@ public class DisplayShopAddon64 extends JavaPlugin {
                 getCommand("testsell").setExecutor(new SellCmd(this, configHandler));
                 getCommand("testsellgui").setExecutor(new SellGuiCmd(this));
                 getCommand("testsellinv").setExecutor(new SellInvCmd());
+                getCommand("testshopadmin").setExecutor(new AdminCmd());
 
                 if (configHandler.isDsDescChanged()) {
                     new DescChange();

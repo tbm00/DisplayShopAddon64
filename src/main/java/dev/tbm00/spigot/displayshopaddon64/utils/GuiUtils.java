@@ -43,6 +43,16 @@ public class GuiUtils {
     }
 
     /**
+     * Handles the event when admin search button is clicked.
+     * 
+     * @param event the inventory click event
+     */
+    public static void handleAdminSearchClick(InventoryClickEvent event) {
+        event.setCancelled(true);
+        new AdminSearchGui(javaPlugin, (Player) event.getWhoClicked());
+    }
+
+    /**
      * Handles the event when a category selector is clicked.
      * 
      * @param event the inventory click event
@@ -90,6 +100,24 @@ public class GuiUtils {
         event.setCancelled(true);
         
         if (event.isShiftClick() && sender.getUniqueId().equals(shop.getOwnerUniqueId())) {
+            DataPack dataPack = DisplayShopAddon64.dsHook.getManager().getDataPackMap().get(sender.getUniqueId());
+            dataPack.setSelectedShop(shop);
+
+            DisplayShopAddon64.dsHook.getMenu("edit").build(sender, (String[]) null);
+        } else ShopUtils.teleportPlayerToShop(sender, shop);
+    }
+
+    /**
+     * Handles the event when a shop item in the admin GUI is clicked.
+     * 
+     * @param event the inventory click event
+     * @param sender the player who clicked the shop item
+     * @param shop the shop associated with the clicked item
+     */
+    public static void handleAdminShopClick(InventoryClickEvent event, Player sender, Shop shop) {
+        event.setCancelled(true);
+        
+        if (event.isShiftClick()) {
             DataPack dataPack = DisplayShopAddon64.dsHook.getManager().getDataPackMap().get(sender.getUniqueId());
             dataPack.setSelectedShop(shop);
 
@@ -252,6 +280,25 @@ public class GuiUtils {
     }
 
     /**
+     * Sets the admin shop GUI's footer's search page button format.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     */
+    public static void setGuiAdminItemSearch(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
+        lore.add("&8-----------------------");
+        lore.add("&6Click to search for a specific query");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dSearch Shops"));
+        item.setItemMeta(meta);
+        item.setType(Material.NAME_TAG);
+        gui.setItem(6, 9, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleAdminSearchClick(event)));
+        lore.clear();
+    }
+
+    /**
      * Formats and adds an item to the shop GUI.
      *
      * @param gui the paginated GUI to which the item will be added
@@ -306,5 +353,63 @@ public class GuiUtils {
         item.setAmount(shop.getShopItemAmount());
 
         gui.addItem(ItemBuilder.from(item).asGuiItem(event -> handleShopClick(event, sender, shop)));
+    }
+
+    /**
+     * Formats and adds an item to the shop admin GUI.
+     *
+     * @param gui the paginated GUI to which the item will be added
+     * @param shop the shop associated with the item
+     * @param item the item to be displayed in the GUI
+     * @param meta the metadata of the item
+     * @param lore the list of lore descriptions to be displayed
+     * @param balance the shop's current balance
+     * @param buyPrice the item's buy price
+     * @param sellPrice the item's sell price
+     * @param priceLine the formatted price string
+     * @param stock the current stock of the item
+     * @param uuid the unique identifier of the shop owner
+     * @param name the formatted display name of the item
+     * @param sender the player viewing the shop
+     * @param isEmpty is the shop item empty
+     */
+    public static void addGuiAdminItemShop(PaginatedGui gui, Shop shop, ItemStack item, ItemMeta meta, List<String> lore, double balance, double buyPrice, double sellPrice, String priceLine, int stock, UUID uuid, String name, Player sender, boolean isEmpty) {
+        meta.setLore(null);
+        lore.add("&8-----------------------");
+        lore.add("&c" + shop.getDescription());
+        if (buyPrice>=0) priceLine = "&7B: &a$" + Utils.formatInt(buyPrice) + " ";
+        if (sellPrice>=0) priceLine += "&7S: &c$" + Utils.formatInt(sellPrice);
+        lore.add(priceLine);
+        if (stock<0) lore.add("&7Stock: &e∞");
+            else lore.add("&7Stock: &e" + stock);
+        if (stock<0) lore.add("&7Balance: &e$&e∞");
+            else lore.add("&7Balance: &e$" + Utils.formatInt(balance));
+        if (uuid!=null) lore.add("&7Owner: &f" + DisplayShopAddon64.repHook.getRepManager().getPlayerUsername(uuid.toString()));
+        lore.add("&7"+shop.getBaseLocation().getWorldName()+": &f"+(int)shop.getBaseLocation().getX()+"&7, &f"
+                    +(int)shop.getBaseLocation().getY()+"&7, &f"+(int)shop.getBaseLocation().getZ());
+        lore.add("&8-----------------------");
+        lore.add("&6Click to TP to this shop");
+        lore.add("&eShift-click to manage this shop");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        if (meta.getDisplayName()==null || meta.getDisplayName().isBlank())
+            name = Utils.formatMaterial(item.getType()) + " &7x &f" + shop.getShopItemAmount();
+        else name = meta.getDisplayName() + " &7x &f" + shop.getShopItemAmount();
+        if (isEmpty) name = "&c(no item)";
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        meta.addItemFlags(ItemFlag.HIDE_DYE);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        for (Enchantment enchant : new HashSet<>(meta.getEnchants().keySet()))
+            meta.removeEnchant(enchant);
+
+        item.setItemMeta(meta);
+        item.setAmount(shop.getShopItemAmount());
+
+        gui.addItem(ItemBuilder.from(item).asGuiItem(event -> handleAdminShopClick(event, sender, shop)));
     }
 }
