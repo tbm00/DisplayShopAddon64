@@ -4,8 +4,8 @@ package dev.tbm00.spigot.displayshopaddon64.command;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,9 +15,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import xzot1k.plugins.ds.api.objects.Shop;
+import xzot1k.plugins.ds.api.objects.LocationClone;
+
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
-import xzot1k.plugins.ds.api.objects.Shop;
 
 public class AdminCmd implements TabExecutor {
     private final String ADMIN_PERM = "displayshopaddon64.admim";
@@ -50,6 +52,14 @@ public class AdminCmd implements TabExecutor {
                 return handleHelpCmd(player);
             case "transfer":
                 return handleTransferCmd(player, args);
+            case "pos1":
+                return handlePosCmd(player, subCmd);
+            case "pos2":
+                return handlePosCmd(player, subCmd);
+            case "copy":
+                return handlePosCmd(player, subCmd);
+            case "paste":
+                return handlePasteCmd(player);
             default:
                 return ShopUtils.handleAdminSearch(player, args);
         }
@@ -62,7 +72,7 @@ public class AdminCmd implements TabExecutor {
      * @return true after displaying help menu
      */
     private boolean handleHelpCmd(Player player) {
-        player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Admin Commands" + ChatColor.DARK_PURPLE + " ---\n"
+        player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shop Admin Commands" + ChatColor.DARK_PURPLE + " ---\n"
             + ChatColor.WHITE + "/testshopadmin <item/player>" + ChatColor.GRAY + " Manage all <item/player> shops\n"
             + ChatColor.WHITE + "/testshopadmin transfer <playerTo> <playerFrom>" + ChatColor.GRAY + " Change shops' owner"
         );
@@ -108,6 +118,93 @@ public class AdminCmd implements TabExecutor {
     }
 
     /**
+     * Handles the sub command for setting clipboard positioning.
+     * 
+     * @param sender the command sender
+     * @param subCmd the position to save
+     * @return true if after processing command
+     */
+    private boolean handlePosCmd(Player sender, String subCmd) {
+        if (subCmd.equalsIgnoreCase("pos1")) {
+            ShopUtils.x1 = (int) Math.floor(sender.getLocation().getX());
+            ShopUtils.y1 = (int) Math.floor(sender.getLocation().getY());
+            ShopUtils.z1 = (int) Math.floor(sender.getLocation().getZ());
+        } else if (subCmd.equalsIgnoreCase("pos2")) {
+            ShopUtils.x2 = (int) Math.floor(sender.getLocation().getX());
+            ShopUtils.y2 = (int) Math.floor(sender.getLocation().getY());
+            ShopUtils.z2 = (int) Math.floor(sender.getLocation().getZ());
+        } else if (subCmd.equalsIgnoreCase("copy")) {
+            ShopUtils.xc = (int) Math.floor(sender.getLocation().getX());
+            ShopUtils.yc = (int) Math.floor(sender.getLocation().getY());
+            ShopUtils.zc = (int) Math.floor(sender.getLocation().getZ());
+            ShopUtils.clipboardWorld = sender.getWorld().getName();
+        }
+
+        Utils.sendMessage(sender, ChatColor.GREEN + subCmd + " coords saved!");
+        return true;
+    }
+
+    /**
+     * Handles the sub command for changing shop coords.
+     * 
+     * @param sender the command sender
+     * @param subCmd the position to save
+     * @return true if after processing command
+     */
+    private boolean handlePasteCmd(Player sender) {
+        int xp = (int) Math.floor(sender.getLocation().getX()),
+            yp = (int) Math.floor(sender.getLocation().getY()),
+            zp = (int) Math.floor(sender.getLocation().getZ());
+        int xd = xp-ShopUtils.xc, yd = yp-ShopUtils.yc, zd = zp-ShopUtils.zc;
+        String worldp = sender.getWorld().getName();
+
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        int i = 0;
+        for (Shop shop : dsMap.values()) {
+            LocationClone shopLoc = shop.getBaseLocation();
+            if (!shopLoc.getWorldName().equalsIgnoreCase(ShopUtils.clipboardWorld)) continue;
+            if (!isInRegion(shopLoc.getX(), shopLoc.getY(), shopLoc.getZ())) continue;
+            double x = shopLoc.getX(), y=shopLoc.getY(), z=shopLoc.getZ();
+
+            shop.unRegister();
+
+            shopLoc.setWorldName(worldp);
+            shopLoc.setX(x+xd);
+            shopLoc.setY(y+yd);
+            shopLoc.setZ(z+zd);
+
+            shop.setBaseLocation(shopLoc);
+            shop.register();
+            ++i;
+        }
+        Utils.sendMessage(sender, ChatColor.GREEN + "" + i + " shops moved!");
+        return true;
+    }
+
+    /**
+     * Checks if the given coordinate is within the region.
+     *
+     * @param x     The x-coordinate.
+     * @param y     The y-coordinate.
+     * @param z     The z-coordinate.
+     * @return true if the coordinate is within the region, false otherwise.
+     */
+    public boolean isInRegion(double x, double y, double z) {
+        // Calculate the minimum and maximum boundaries on each axis
+        int minX = Math.min(ShopUtils.x1, ShopUtils.x2);
+        int maxX = Math.max(ShopUtils.x1, ShopUtils.x2);
+        int minY = Math.min(ShopUtils.y1, ShopUtils.y2);
+        int maxY = Math.max(ShopUtils.y1, ShopUtils.y2);
+        int minZ = Math.min(ShopUtils.z1, ShopUtils.z2);
+        int maxZ = Math.max(ShopUtils.z1, ShopUtils.z2);
+
+        // Check if the coordinate is within the boundaries
+        return (x >= minX && x <= maxX) &&
+               (y >= minY && y <= maxY) &&
+               (z >= minZ && z <= maxZ);
+    }
+
+    /**
      * Handles tab completion for the /testshopadmin command.
      */
     @Override
@@ -115,7 +212,7 @@ public class AdminCmd implements TabExecutor {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
             list.clear();
-            String[] subCmds = new String[]{"<item>","<player>","transfer"};
+            String[] subCmds = new String[]{"<item>","<player>","transfer","pos1","pos2","copy","paste"};
             for (String n : subCmds) {
                 if (n!=null && n.startsWith(args[0])) 
                     list.add(n);

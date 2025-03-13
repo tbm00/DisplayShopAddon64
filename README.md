@@ -57,7 +57,7 @@ Created by tbm00 for play.mc64.wtf.
 
 ## Config
 ```
-# DisplayShopAddon64 v0.0.4-beta by @tbm00
+# DisplayShopAddon64 v0.0.5-beta by @tbm00
 # https://github.com/tbm00/DisplayShopAddon64
 
 enabled: true

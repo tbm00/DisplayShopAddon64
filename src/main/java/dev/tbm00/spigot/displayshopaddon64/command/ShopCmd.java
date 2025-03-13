@@ -63,7 +63,7 @@ public class ShopCmd implements TabExecutor {
         String subCmd = args[0].toLowerCase();
         switch (subCmd) {
             case "help":
-                return handleHelpCmd(player, alias);
+                return handleHelpCmd(player);
             case "buy":
                 return handleBuyCmd(player, args);
             case "advertise":
@@ -101,7 +101,7 @@ public class ShopCmd implements TabExecutor {
      * @param player the command sender
      * @return true after displaying help menu
      */
-    private boolean handleHelpCmd(Player player, String alias) {
+    private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shop Owner Commands" + ChatColor.DARK_PURPLE + " ---\n"
             + ChatColor.WHITE + "/testshop buy <#>" + ChatColor.GRAY + " Buy shop creation item(s)\n"
             + ChatColor.WHITE + "/testshop list" + ChatColor.GRAY + " Open your shop list & manage GUI\n"

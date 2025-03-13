@@ -20,8 +20,10 @@ import dev.tbm00.spigot.displayshopaddon64.gui.*;
 
 public class ShopUtils {
     private static DisplayShopAddon64 javaPlugin;
-    public static final List<String> pendingTeleports = new CopyOnWriteArrayList<>();
     private static ConfigHandler configHandler;
+    public static final List<String> pendingTeleports = new CopyOnWriteArrayList<>();
+    public static String clipboardWorld = null;
+    public static int x1=0, y1=0, z1=0, x2=0, y2=0, z2=0, xc=0, yc=0, zc=0;
 
     public static void init(DisplayShopAddon64 javaPlugin, ConfigHandler configHandler) {
         ShopUtils.javaPlugin = javaPlugin;

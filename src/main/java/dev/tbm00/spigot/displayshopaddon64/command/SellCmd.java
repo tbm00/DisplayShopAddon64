@@ -56,7 +56,7 @@ public class SellCmd implements TabExecutor {
         String subCmd = args[0].toLowerCase();
         switch (subCmd) {
             case "help":
-                return handleHelpCmd(player, alias);
+                return handleHelpCmd(player);
             case "pog":
                 return ShopUtils.handleCategoryCmd(player, "shoppog");
             case "ores":
@@ -83,7 +83,7 @@ public class SellCmd implements TabExecutor {
      * @param player the command sender
      * @return true after displaying help menu
      */
-    private boolean handleHelpCmd(Player player, String alias) {
+    private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
             + ChatColor.WHITE + "/testsell" + ChatColor.GRAY + " Open shop category GUI\n"
             + ChatColor.WHITE + "/testsell <item>" + ChatColor.GRAY + " Find all <item> shops you can sell to\n"
