@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.PaginatedGui;
@@ -208,15 +209,18 @@ public class GuiUtils {
      * @param item holder for current item
      * @param meta holder for current item's meta
      * @param lore holder for current item's lore
+     * @param player player whose shops to open
      */
-    public static void setGuiItemCatOres(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
+    public static void setGuiItemYourShops(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore, Player player) {
+        item.setType(Material.PLAYER_HEAD);
+        SkullMeta headmeta = (SkullMeta) item.getItemMeta();
         lore.add("&8-----------------------");
-        lore.add("&6Click to change category to: ores");
-        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dOre Shops"));
-        item.setItemMeta(meta);
-        item.setType(Material.DIAMOND);
-        gui.setItem(6, 5, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "commandpanel shopores")));
+        lore.add("&6Click to view/manage your shops");
+        headmeta.setOwningPlayer(player);
+        headmeta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        headmeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
+        item.setItemMeta(headmeta);
+        gui.setItem(6, 5, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "testshop list")));
         lore.clear();
     }
 
@@ -365,8 +369,8 @@ public class GuiUtils {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        for (Enchantment enchant : new HashSet<>(meta.getEnchants().keySet()))
-            meta.removeEnchant(enchant);
+        //for (Enchantment enchant : new HashSet<>(meta.getEnchants().keySet()))
+        //    meta.removeEnchant(enchant);
 
         item.setItemMeta(meta);
         item.setAmount(shop.getShopItemAmount());
@@ -423,8 +427,8 @@ public class GuiUtils {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        for (Enchantment enchant : new HashSet<>(meta.getEnchants().keySet()))
-            meta.removeEnchant(enchant);
+        //for (Enchantment enchant : new HashSet<>(meta.getEnchants().keySet()))
+        //    meta.removeEnchant(enchant);
 
         item.setItemMeta(meta);
         item.setAmount(shop.getShopItemAmount());

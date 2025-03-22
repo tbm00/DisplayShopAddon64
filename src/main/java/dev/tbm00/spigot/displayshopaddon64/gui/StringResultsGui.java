@@ -34,7 +34,7 @@ public class StringResultsGui {
         gui = new PaginatedGui(6, 45, query);
         
         fillShops(dsMap, sender, query, queryType);
-        setupFooter();
+        setupFooter(sender);
         
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
@@ -91,7 +91,7 @@ public class StringResultsGui {
     /**
      * Sets up the footer of the GUI with categories & all other buttons.
      */
-    private void setupFooter() {
+    private void setupFooter(Player sender) {
         ItemStack item = new ItemStack(Material.GLASS);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
@@ -108,10 +108,10 @@ public class StringResultsGui {
         // Category: Drops
         GuiUtils.setGuiItemCatDrops(gui, item, meta, lore);
 
-        // Category: Ores
-        GuiUtils.setGuiItemCatOres(gui, item, meta, lore);
+        // NonCategory: Your Shops
+        GuiUtils.setGuiItemYourShops(gui, item, meta, lore, sender);
 
-        // Category: All
+        // NonCategory: All Shops
         lore.add("&8-----------------------");
         lore.add("&6Click to view all shops");
         meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());

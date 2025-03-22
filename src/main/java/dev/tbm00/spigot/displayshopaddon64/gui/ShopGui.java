@@ -30,7 +30,7 @@ public class ShopGui {
         gui = new PaginatedGui(6, 45, "All Shops");
         
         fillShops(dsMap, player);
-        setupFooter();
+        setupFooter(player);
 
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
@@ -70,7 +70,7 @@ public class ShopGui {
     /**
      * Sets up the footer of the GUI with categories & all other buttons.
      */
-    private void setupFooter() {
+    private void setupFooter(Player sender) {
         ItemStack item = new ItemStack(Material.GLASS);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
@@ -87,10 +87,10 @@ public class ShopGui {
         // Category: Drops
         GuiUtils.setGuiItemCatDrops(gui, item, meta, lore);
 
-        // Category: Ores
-        GuiUtils.setGuiItemCatOres(gui, item, meta, lore);
+        // NonCategory: Your Shops
+        GuiUtils.setGuiItemYourShops(gui, item, meta, lore, sender);
 
-        // Category: All
+        // NonCategory: All Shops
         lore.add("&8-----------------------");
         lore.add("&eCurrently viewing all shops");
         meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());

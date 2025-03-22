@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.PaginatedGui;
@@ -32,7 +33,7 @@ public class PlayerResultsGui {
         gui = new PaginatedGui(6, 45, targetName);
         
         fillShops(dsMap, sender, targetUUID, queryType);
-        setupFooter();
+        setupFooter(sender, targetUUID);
         
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
@@ -74,7 +75,7 @@ public class PlayerResultsGui {
     /**
      * Sets up the footer of the GUI with all, page next, page back, and search buttons.
      */
-    private void setupFooter() {
+    private void setupFooter(Player sender, String targetUUID) {
         ItemStack item = new ItemStack(Material.GLASS);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
@@ -91,10 +92,21 @@ public class PlayerResultsGui {
         // Category: Drops
         GuiUtils.setGuiItemCatDrops(gui, item, meta, lore);
 
-        // Category: Ores
-        GuiUtils.setGuiItemCatOres(gui, item, meta, lore);
+        // NonCategory: Your Shops
+        if (targetUUID.equals(sender.getUniqueId().toString())) {
+            item.setType(Material.PLAYER_HEAD);
+            SkullMeta headmeta = (SkullMeta) item.getItemMeta();
+            lore.add("&8-----------------------");
+            lore.add("&eCurrently viewing your shops");
+            headmeta.setOwningPlayer(sender);
+            headmeta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+            headmeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
+            item.setItemMeta(headmeta);
+            gui.setItem(6, 5, ItemBuilder.from(item).asGuiItem(event -> {event.setCancelled(true);}));
+            lore.clear();
+        } else GuiUtils.setGuiItemYourShops(gui, item, meta, lore, sender);
 
-        // NonCategory: All
+        // NonCategory: All Shops
         GuiUtils.setGuiItemAllShops(gui, item, meta, lore);
 
         // Previous Page

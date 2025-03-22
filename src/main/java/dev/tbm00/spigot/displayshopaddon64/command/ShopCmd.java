@@ -81,7 +81,7 @@ public class ShopCmd implements TabExecutor {
             case "pog":
                 return ShopUtils.handleCategoryCmd(player, "shoppog");
             case "ores":
-                return ShopUtils.handleCategoryCmd(player, "shopores");
+                return ShopUtils.handleCategoryCmd(player, "shoppog");
             case "blocks":
                 return ShopUtils.handleCategoryCmd(player, "shopblocks");
             case "drops":
