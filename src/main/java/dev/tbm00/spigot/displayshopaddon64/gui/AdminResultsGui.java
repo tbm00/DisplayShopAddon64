@@ -113,14 +113,7 @@ public class AdminResultsGui {
         GuiUtils.setGuiItemCatOres(gui, item, meta, lore);
 
         // Category: All
-        lore.add("&8-----------------------");
-        lore.add("&6Click to view all shops");
-        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dAll Shops"));
-        item.setItemMeta(meta);
-        item.setType(Material.CHEST);
-        gui.setItem(6, 6, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleAllClick(event, (Player) event.getWhoClicked())));
-        lore.clear();
+        GuiUtils.setGuiItemAllShops(gui, item, meta, lore);
 
         // Previous Page
         if (gui.getPagesNum()>=2) GuiUtils.setGuiItemPageBack(gui, item, meta, lore, label);

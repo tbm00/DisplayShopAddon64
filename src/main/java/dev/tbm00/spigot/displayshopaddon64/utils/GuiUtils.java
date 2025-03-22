@@ -221,6 +221,25 @@ public class GuiUtils {
     }
 
     /**
+     * Sets the shop GUI's footer's category button: ores.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     */
+    public static void setGuiItemAllShops(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
+        lore.add("&8-----------------------");
+        lore.add("&6Click to view all shops");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dAll Shops"));
+        item.setItemMeta(meta);
+        item.setType(Material.CHEST);
+        gui.setItem(6, 6, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleAllClick(event, (Player) event.getWhoClicked())));
+        lore.clear();
+    }
+
+    /**
      * Sets the shop GUI's footer's previous page button format.
      *
      * @param gui the gui that will be sent to the player
