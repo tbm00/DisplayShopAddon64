@@ -362,7 +362,6 @@ public class ShopCmd implements TabExecutor {
         int shops_affected = 0;
         for (Shop shop : dsMap.values()) {
             // confirm shop belongs to target
-            if (shop.getShopItem()==null) continue;
             if (shop.getOwnerUniqueId()==null || !shop.getOwnerUniqueId().equals(uuid)) continue;
             if (shop.getStoredBalance()==-1) continue;
             else {
