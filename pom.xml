@@ -111,9 +111,9 @@
         <dependency>
             <groupId>dev.tbm00</groupId>
             <artifactId>Rep64</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/depend/Rep64-1_2_2.jar</systemPath>
+            <systemPath>${project.basedir}/depend/Rep64-1_2_3.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>dev.triumphteam</groupId>
