@@ -6,7 +6,7 @@
 
     <groupId>dev.tbm00</groupId>
     <artifactId>DisplayShopAddon64</artifactId>
-    <version>0.0.6-beta</version>
+    <version>0.0.7-beta</version>
     <packaging>jar</packaging>
 
     <name>DisplayShopAddon64</name>
@@ -103,7 +103,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.XZot1K</groupId>
-            <artifactId>DisplayShopsAPI</artifactId>
+            <artifactId>DisplayShops</artifactId>
             <version>2.1.2</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/depend/DisplayShops-2_1_2.jar</systemPath>

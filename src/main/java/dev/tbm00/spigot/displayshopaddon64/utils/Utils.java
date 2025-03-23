@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.chat.TextComponent;
-
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;

@@ -1,14 +1,13 @@
 package dev.tbm00.spigot.displayshopaddon64.utils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -20,17 +19,21 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.PaginatedGui;
 
 import xzot1k.plugins.ds.api.objects.Shop;
-import xzot1k.plugins.ds.api.objects.DataPack;
+import xzot1k.plugins.ds.api.enums.EditType;
+import xzot1k.plugins.ds.api.events.ShopEditEvent;
 
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
+import dev.tbm00.spigot.displayshopaddon64.ConfigHandler;
 import dev.tbm00.spigot.displayshopaddon64.gui.*;
 
 public class GuiUtils {
     private static DisplayShopAddon64 javaPlugin;
     public static final List<String> pendingTeleports = new CopyOnWriteArrayList<>();
+    private static boolean editPrevention;
 
-    public static void init(DisplayShopAddon64 javaPlugin) {
+    public static void init(DisplayShopAddon64 javaPlugin, ConfigHandler configHandler) {
         GuiUtils.javaPlugin = javaPlugin;
+        editPrevention = configHandler.isDsEditorPrevented();
     }
 
     /**
@@ -101,10 +104,7 @@ public class GuiUtils {
         event.setCancelled(true);
         
         if (event.isShiftClick() && sender.getUniqueId().equals(shop.getOwnerUniqueId())) {
-            DataPack dataPack = DisplayShopAddon64.dsHook.getManager().getDataPackMap().get(sender.getUniqueId());
-            dataPack.setSelectedShop(shop);
-
-            DisplayShopAddon64.dsHook.getMenu("edit").build(sender, (String[]) null);
+            openShopMenu(sender, shop);
         } else ShopUtils.teleportPlayerToShop(sender, shop);
     }
 
@@ -119,11 +119,49 @@ public class GuiUtils {
         event.setCancelled(true);
         
         if (event.isShiftClick()) {
-            DataPack dataPack = DisplayShopAddon64.dsHook.getManager().getDataPackMap().get(sender.getUniqueId());
-            dataPack.setSelectedShop(shop);
-
-            DisplayShopAddon64.dsHook.getMenu("edit").build(sender, (String[]) null);
+            openShopMenu(sender, shop);
         } else ShopUtils.teleportPlayerToShop(sender, shop);
+    }
+
+    /**
+     * Opens the DisplayShops' menu for that particular shop.
+     * 
+     * This should build the menu, as well as set the player-shop to "currently editing"
+     * 
+     * @param event the inventory click event
+     * @param sender the player who clicked the shop item
+     * @param shop the shop associated with the clicked item
+     */
+    private static void openShopMenu(Player player, Shop shop) {
+        if (editPrevention && shop.getCurrentEditor()!=null && !shop.getCurrentEditor().toString().equals(player.getUniqueId().toString())) {
+            if (javaPlugin.getServer().getOfflinePlayer(shop.getCurrentEditor()).isOnline()) {
+                Utils.sendMessage(player, "&cShop currently under going edits by " + javaPlugin.getServer().getOfflinePlayer(shop.getCurrentEditor()).getName());
+                return;
+            }
+        }
+
+        ShopEditEvent shopEditEvent = new ShopEditEvent(player, shop, EditType.OPEN_EDIT_MENU);
+        javaPlugin.getServer().getPluginManager().callEvent(shopEditEvent);
+        if (shopEditEvent.isCancelled()) {
+            Utils.sendMessage(player, "&cShop edit event canceled somewhere along the way..!");
+            return;
+        }
+
+        if (editPrevention) shop.setCurrentEditor(player.getUniqueId());
+
+        DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
+
+        if (DisplayShopAddon64.dsHook.getManager().getDataPack(player)==null) {
+            Utils.sendMessage(player, "&cYour DS data pack is null");
+            return;
+        }
+
+        DisplayShopAddon64.dsHook.getMenu("edit").build(player);
+        DisplayShopAddon64.dsHook.runEventCommands("shop-edit", player);
+
+        Bukkit.getScheduler().runTaskLater(javaPlugin, () -> {
+            DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
+        }, 1);
     }
 
     /**

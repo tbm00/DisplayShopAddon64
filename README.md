@@ -62,7 +62,7 @@ Created by tbm00 for play.mc64.wtf.
 
 ## Config
 ```
-# DisplayShopAddon64 v0.0.6-beta by @tbm00
+# DisplayShopAddon64 v0.0.7-beta by @tbm00
 # https://github.com/tbm00/DisplayShopAddon64
 
 enabled: true

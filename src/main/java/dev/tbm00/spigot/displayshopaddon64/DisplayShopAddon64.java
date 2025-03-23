@@ -8,10 +8,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
-
 import xzot1k.plugins.ds.DisplayShops;
-import xzot1k.plugins.ds.DisplayShopsAPI;
-
 import dev.tbm00.spigot.rep64.Rep64;
 
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
@@ -21,7 +18,7 @@ import dev.tbm00.spigot.displayshopaddon64.task.DescChange;
 
 public class DisplayShopAddon64 extends JavaPlugin {
     private ConfigHandler configHandler;
-    public static DisplayShopsAPI dsHook;
+    public static DisplayShops dsHook;
     public static Economy ecoHook;
     public static Rep64 repHook;
 
@@ -35,7 +32,7 @@ public class DisplayShopAddon64 extends JavaPlugin {
 
             Utils.init(this, configHandler);
             ShopUtils.init(this, configHandler);
-            GuiUtils.init(this);
+            GuiUtils.init(this, configHandler);
             
             Utils.log(ChatColor.LIGHT_PURPLE,
                     ChatColor.DARK_PURPLE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-",
