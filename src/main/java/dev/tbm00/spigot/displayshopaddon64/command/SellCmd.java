@@ -57,6 +57,9 @@ public class SellCmd implements TabExecutor {
         switch (subCmd) {
             case "help":
                 return handleHelpCmd(player);
+            case "armor":
+            case "tools":
+            case "tool":
             case "pog":
                 return ShopUtils.handleCategoryCmd(player, "shoppog");
             case "ores":
@@ -64,9 +67,13 @@ public class SellCmd implements TabExecutor {
             case "blocks":
                 return ShopUtils.handleCategoryCmd(player, "shopblocks");
             case "drops":
+            case "mobdrops":
                 return ShopUtils.handleCategoryCmd(player, "shopdrops");
             case "food":
                 return ShopUtils.handleCategoryCmd(player, "shopfood");
+            case "farm":
+            case "farming":
+                return ShopUtils.handleCategoryCmd(player, "shopfarm");
             case "all":
             case "inv":
                 return parseSellInvCmd(player, args);

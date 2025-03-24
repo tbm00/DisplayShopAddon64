@@ -74,6 +74,6 @@ feature:
   enabled: true
   dsMaxStoredBalance: 20000000
   dsMaxStoredStock: 8192
-  guiDefaultCategory: "shoppog"
+  guiDefaultCategory: "shopgui"
   dsDescChange: true
 ```

@@ -78,16 +78,23 @@ public class ShopCmd implements TabExecutor {
                 return handleDepositCmd(player, args);
             case "withdraw-all":
                 return handleWithdrawCmd(player, args);
+            case "armor":
+            case "tools":
+            case "tool":
             case "pog":
                 return ShopUtils.handleCategoryCmd(player, "shoppog");
             case "ores":
-                return ShopUtils.handleCategoryCmd(player, "shoppog");
+                return ShopUtils.handleCategoryCmd(player, "shopores");
             case "blocks":
                 return ShopUtils.handleCategoryCmd(player, "shopblocks");
+            case "mobdrops":
             case "drops":
                 return ShopUtils.handleCategoryCmd(player, "shopdrops");
             case "food":
                 return ShopUtils.handleCategoryCmd(player, "shopfood");
+            case "farm":
+            case "farming":
+                return ShopUtils.handleCategoryCmd(player, "shopfarm");
             case "gui":
                 return ShopUtils.handleGuiCmd(player);
             case "searchgui":

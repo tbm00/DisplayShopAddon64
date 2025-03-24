@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.PaginatedGui;
 
 import xzot1k.plugins.ds.api.objects.Shop;
@@ -124,6 +125,16 @@ public class GuiUtils {
     }
 
     /**
+     * Handles the event when sort players button is clicked.
+     * 
+     * @param event the inventory click event
+     */
+    public static void handleMainMenuClick(InventoryClickEvent event) {
+        event.setCancelled(true);
+        Utils.sudoCommand(event.getWhoClicked(), "commandpanel menu");
+    }
+
+    /**
      * Opens the DisplayShops' menu for that particular shop.
      * 
      * This should build the menu, as well as set the player-shop to "currently editing"
@@ -165,82 +176,6 @@ public class GuiUtils {
     }
 
     /**
-     * Sets the shop GUI's footer's category button: pog.
-     *
-     * @param gui the gui that will be sent to the player
-     * @param item holder for current item
-     * @param meta holder for current item's meta
-     * @param lore holder for current item's lore
-     */
-    public static void setGuiItemCatPog(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
-        lore.add("&8-----------------------");
-        lore.add("&6Click to change category to: pog");
-        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dPog Shops"));
-        item.setItemMeta(meta);
-        item.setType(Material.NETHERITE_PICKAXE);
-        gui.setItem(6, 1, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "commandpanel shoppog")));
-        lore.clear();
-    }
-
-    /**
-     * Sets the shop GUI's footer's category button: blocks.
-     *
-     * @param gui the gui that will be sent to the player
-     * @param item holder for current item
-     * @param meta holder for current item's meta
-     * @param lore holder for current item's lore
-     */
-    public static void setGuiItemCatBlocks(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
-        lore.add("&8-----------------------");
-        lore.add("&6Click to change category to: blocks");
-        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dBlock Shops"));
-        item.setItemMeta(meta);
-        item.setType(Material.GRASS_BLOCK);
-        gui.setItem(6, 2, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "commandpanel shopblocks")));
-        lore.clear();
-    }
-
-    /**
-     * Sets the shop GUI's footer's category button: food.
-     *
-     * @param gui the gui that will be sent to the player
-     * @param item holder for current item
-     * @param meta holder for current item's meta
-     * @param lore holder for current item's lore
-     */
-    public static void setGuiItemCatFood(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
-        lore.add("&8-----------------------");
-        lore.add("&6Click to change category to: food");
-        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dFood Shops"));
-        item.setItemMeta(meta);
-        item.setType(Material.COOKED_BEEF);
-        gui.setItem(6, 3, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "commandpanel shopfood")));
-        lore.clear();
-    }
-
-    /**
-     * Sets the shop GUI's footer's category button: mob drops.
-     *
-     * @param gui the gui that will be sent to the player
-     * @param item holder for current item
-     * @param meta holder for current item's meta
-     * @param lore holder for current item's lore
-     */
-    public static void setGuiItemCatDrops(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
-        lore.add("&8-----------------------");
-        lore.add("&6Click to change category to: mob drops");
-        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dMob Drop Shops"));
-        item.setItemMeta(meta);
-        item.setType(Material.GUNPOWDER);
-        gui.setItem(6, 4, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "commandpanel shopdrops")));
-        lore.clear();
-    }
-
-    /**
      * Sets the shop GUI's footer's category button: ores.
      *
      * @param gui the gui that will be sent to the player
@@ -258,7 +193,7 @@ public class GuiUtils {
         headmeta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
         headmeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
         item.setItemMeta(headmeta);
-        gui.setItem(6, 5, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "testshop list")));
+        gui.setItem(6, 1, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "testshop list")));
         lore.clear();
     }
 
@@ -277,7 +212,26 @@ public class GuiUtils {
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dAll Shops"));
         item.setItemMeta(meta);
         item.setType(Material.CHEST);
-        gui.setItem(6, 6, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleAllClick(event, (Player) event.getWhoClicked())));
+        gui.setItem(6, 2, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleAllClick(event, (Player) event.getWhoClicked())));
+        lore.clear();
+    }
+
+    /**
+     * Sets the shop GUI's footer's category button: pog.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     */
+    public static void setGuiItemCat(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
+        lore.add("&8-----------------------");
+        lore.add("&6Click to open category selector");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dShop Categories"));
+        item.setItemMeta(meta);
+        item.setType(Material.NETHER_STAR);
+        gui.setItem(6, 3, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "commandpanel shopgui")));
         lore.clear();
     }
 
@@ -297,7 +251,7 @@ public class GuiUtils {
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fPrevious Page"));
         item.setItemMeta(meta);
         item.setType(Material.STONE_BUTTON);
-        gui.setItem(6, 7, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handlePageClick(event, gui, false, label)));
+        gui.setItem(6, 5, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handlePageClick(event, gui, false, label)));
         lore.clear();
     }
 
@@ -317,7 +271,7 @@ public class GuiUtils {
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fNext Page"));
         item.setItemMeta(meta);
         item.setType(Material.STONE_BUTTON);
-        gui.setItem(6, 8, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handlePageClick(event, gui, true, label)));
+        gui.setItem(6, 6, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handlePageClick(event, gui, true, label)));
         lore.clear();
     }
 
@@ -331,12 +285,12 @@ public class GuiUtils {
      */
     public static void setGuiItemSearch(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
         lore.add("&8-----------------------");
-        lore.add("&6Click to search for a specific item");
+        lore.add("&6Click to search for a specific shop");
         meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dSearch Shops"));
         item.setItemMeta(meta);
-        item.setType(Material.NAME_TAG);
-        gui.setItem(6, 9, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleSearchClick(event)));
+        item.setType(Material.WRITABLE_BOOK);
+        gui.setItem(6, 8, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleSearchClick(event)));
         lore.clear();
     }
 
@@ -350,12 +304,38 @@ public class GuiUtils {
      */
     public static void setGuiAdminItemSearch(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
         lore.add("&8-----------------------");
-        lore.add("&6Click to search for a specific query");
+        lore.add("&6Click to search for a specific shop");
         meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dSearch Shops"));
         item.setItemMeta(meta);
-        item.setType(Material.NAME_TAG);
-        gui.setItem(6, 9, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleAdminSearchClick(event)));
+        item.setType(Material.WRITABLE_BOOK);
+        gui.setItem(6, 8, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleAdminSearchClick(event)));
+        lore.clear();
+    }
+
+    /**
+     * Sets the GUI's footer's main menu button format.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     */
+    public static void setGuiItemMainMenu(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore) {
+        lore.clear();
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fGo to Main Menu"));
+        item.setItemMeta(meta);
+        item.setType(Material.STONE_BUTTON);
+        gui.setItem(6, 9, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleMainMenuClick(event)));
+        lore.clear();
+    } public static void setGuiItemMainMenu(Gui gui, ItemStack item, ItemMeta meta, List<String> lore) {
+        lore.clear();
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fGo to Main Menu"));
+        item.setItemMeta(meta);
+        item.setType(Material.STONE_BUTTON);
+        gui.setItem(6, 9, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleMainMenuClick(event)));
         lore.clear();
     }
 

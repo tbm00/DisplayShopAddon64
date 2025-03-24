@@ -96,33 +96,33 @@ public class AdminResultsGui {
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
 
-        // Category: Pog
-        GuiUtils.setGuiItemCatPog(gui, item, meta, lore);
-
-        // Category: Blocks
-        GuiUtils.setGuiItemCatBlocks(gui, item, meta, lore);
-
-        // Category: Food
-        GuiUtils.setGuiItemCatFood(gui, item, meta, lore);
-
-        // Category: Drops
-        GuiUtils.setGuiItemCatDrops(gui, item, meta, lore);
-
-        // NonCategory: Your Shops
+        // Your Shops
         GuiUtils.setGuiItemYourShops(gui, item, meta, lore, sender);
 
-        // NonCategory: All Shops
+        // All Shops
         GuiUtils.setGuiItemAllShops(gui, item, meta, lore);
+
+        // Category
+        GuiUtils.setGuiItemCat(gui, item, meta, lore);
+
+        // Empty
+        gui.setItem(6, 4, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Previous Page
         if (gui.getPagesNum()>=2) GuiUtils.setGuiItemPageBack(gui, item, meta, lore, label);
-        else gui.setItem(6, 7, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
+        else gui.setItem(6, 5, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Next Page
         if (gui.getPagesNum()>=2)  GuiUtils.setGuiItemPageNext(gui, item, meta, lore, label);
-        else gui.setItem(6, 8, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
+        else gui.setItem(6, 6, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
-        // Admin Search
+        // Sort
+        gui.setItem(6, 7, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
+
+        // Search
         GuiUtils.setGuiAdminItemSearch(gui, item, meta, lore);
+        
+        // Main Menu
+        GuiUtils.setGuiItemMainMenu(gui, item, meta, lore);
     }
 }

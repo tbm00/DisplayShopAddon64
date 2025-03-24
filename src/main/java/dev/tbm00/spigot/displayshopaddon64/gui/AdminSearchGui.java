@@ -25,7 +25,7 @@ public class AdminSearchGui {
         leftMeta.setItemName(" ");
         leftItem.setItemMeta(leftMeta);
 
-        ItemStack rightItem = new ItemStack(Material.NAME_TAG);
+        ItemStack rightItem = new ItemStack(Material.WRITABLE_BOOK);
         ItemMeta rightMeta = rightItem.getItemMeta();
         rightMeta.setDisplayName("item or player");
         rightMeta.setItemName("item or player");

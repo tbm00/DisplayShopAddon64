@@ -46,7 +46,7 @@ public class ConfigHandler {
             featureEnabled = section.contains("enabled") ? section.getBoolean("enabled") : false;
             dsMaxStoredBalance = section.contains("dsMaxStoredBalance") ? section.getInt("dsMaxStoredBalance") : 20000000;
             dsMaxStoredStock = section.contains("dsMaxStoredStock") ? section.getInt("dsMaxStoredStock") : 8192;
-            guiDefaultCategory = section.contains("guiDefaultCategory") ? section.getString("guiDefaultCategory") : "shoppog";
+            guiDefaultCategory = section.contains("guiDefaultCategory") ? section.getString("guiDefaultCategory") : "shopgui";
             dsDescChange = section.contains("dsDescChange") ? section.getBoolean("dsDescChange") : false;
             dsDescChange = section.contains("dsEditorPrevention") ? section.getBoolean("dsEditorPrevention") : true;
         }
