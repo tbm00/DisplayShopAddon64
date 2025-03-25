@@ -63,8 +63,11 @@ public class ListResultsAdminGui {
             boolean remove = false;
 
             /*check if query matches*/ 
-                boolean include = false; 
-                ItemStack item = shop.getShopItem().clone();
+                ItemStack item;
+                if (shop.getShopItem()==null) item = new ItemStack(Material.BARRIER);
+                else item = shop.getShopItem().clone();
+                
+                boolean include = false;
                 String mat = item.getType().toString().replace("_", " ");
                 ItemMeta meta = item.getItemMeta();
                 String name = meta.getDisplayName();
