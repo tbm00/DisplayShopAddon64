@@ -10,12 +10,12 @@ import xzot1k.plugins.ds.api.objects.Shop;
 
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 
-public class DescChange {
+public class DescChangeTask {
 
     /**
      * DescChange task updates shop descriptions for specific items.
      */
-    public DescChange() {
+    public DescChangeTask() {
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
         for (Shop shop : dsMap.values()) {
             if (shop.getShopItem()==null) continue;

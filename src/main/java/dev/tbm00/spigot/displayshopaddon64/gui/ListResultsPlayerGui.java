@@ -22,7 +22,7 @@ import xzot1k.plugins.ds.api.objects.Shop;
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
 
-public class PlayerResultsGui {
+public class ListResultsPlayerGui {
     DisplayShopAddon64 javaPlugin;
     PaginatedGui gui;
     String targetName;
@@ -32,7 +32,7 @@ public class PlayerResultsGui {
     int currentSortIndex = 0;
     int queryType = 0; // the type of query 0="shop", 1="buy", 2="sell"
     
-    public PlayerResultsGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player sender, String targetUUID, String targetName, int queryType, int sortIndex) {
+    public ListResultsPlayerGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player sender, String targetUUID, String targetName, int queryType, int sortIndex) {
         this.javaPlugin = javaPlugin;
         this.targetName = targetName;
         this.sender = sender;

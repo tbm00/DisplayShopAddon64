@@ -14,7 +14,7 @@ import dev.tbm00.spigot.rep64.Rep64;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
 import dev.tbm00.spigot.displayshopaddon64.command.*;
 import dev.tbm00.spigot.displayshopaddon64.listener.PlayerMovement;
-import dev.tbm00.spigot.displayshopaddon64.task.DescChange;
+import dev.tbm00.spigot.displayshopaddon64.task.DescChangeTask;
 
 public class DisplayShopAddon64 extends JavaPlugin {
     private ConfigHandler configHandler;
@@ -55,7 +55,7 @@ public class DisplayShopAddon64 extends JavaPlugin {
                 getCommand("testshopadmin").setExecutor(new AdminCmd());
 
                 if (configHandler.isDsDescChanged()) {
-                    new DescChange();
+                    new DescChangeTask();
                 }
             }
         }

@@ -51,7 +51,7 @@ public class ShopUtils {
      */
     public static boolean handleGuiCmd(Player player) {
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new ShopGui(javaPlugin, dsMap, player, 1);
+        new ListAllGui(javaPlugin, dsMap, player, 1);
         return true;
     }
 
@@ -72,7 +72,7 @@ public class ShopUtils {
         String targetName = args[0];
         String targetUUID = DisplayShopAddon64.repHook.getRepManager().getPlayerUUID(targetName);
         if (targetUUID!=null) {
-            new PlayerResultsGui(javaPlugin, dsMap, sender, targetUUID, targetName, queryType, 1);
+            new ListResultsPlayerGui(javaPlugin, dsMap, sender, targetUUID, targetName, queryType, 1);
             return true;
         }
 
@@ -89,7 +89,7 @@ public class ShopUtils {
         if (search==null) return false;
         search = search.replace("_", " ");
         
-        new StringResultsGui(javaPlugin, dsMap, sender, search, queryType, 1);
+        new ListResultsStringGui(javaPlugin, dsMap, sender, search, queryType, 1);
         return true;
     }
 
@@ -108,7 +108,7 @@ public class ShopUtils {
         }
         String targetName = args[0];
         if (targetName!=null) {
-            new AdminResultsGui(javaPlugin, dsMap, sender, targetName, 1);
+            new ListResultsAdminGui(javaPlugin, dsMap, sender, targetName, 1);
             return true;
         }
 
@@ -125,7 +125,7 @@ public class ShopUtils {
         if (search==null) return false;
         search = search.replace("_", " ");
         
-        new AdminResultsGui(javaPlugin, dsMap, sender, search, 1);
+        new ListResultsAdminGui(javaPlugin, dsMap, sender, search, 1);
         return true;
     }
 

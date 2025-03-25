@@ -48,7 +48,7 @@ public class GuiUtils {
     public static void handleSortShopsAdminClick(InventoryClickEvent event, String query, int sortIndex) {
         event.setCancelled(true);
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new AdminResultsGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), query, sortIndex);
+        new ListResultsAdminGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), query, sortIndex);
     }
 
     /**
@@ -58,7 +58,7 @@ public class GuiUtils {
     public static void handleSortShopsPlayerClick(InventoryClickEvent event, String targetUUID, String targetName, int queryType, int sortIndex) {
         event.setCancelled(true);
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new PlayerResultsGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), targetUUID, targetName, queryType, sortIndex);
+        new ListResultsPlayerGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), targetUUID, targetName, queryType, sortIndex);
     }
 
     /**
@@ -68,7 +68,7 @@ public class GuiUtils {
     public static void handleSortShopsStringClick(InventoryClickEvent event, String query, int queryType, int sortIndex) {
         event.setCancelled(true);
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new StringResultsGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), query, queryType, sortIndex);
+        new ListResultsStringGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), query, queryType, sortIndex);
     }
 
     /**
@@ -78,7 +78,7 @@ public class GuiUtils {
     public static void handleSortShopsAllClick(InventoryClickEvent event, int sortIndex) {
         event.setCancelled(true);
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new ShopGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), sortIndex);
+        new ListAllGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), sortIndex);
     }
 
     /**
@@ -98,7 +98,7 @@ public class GuiUtils {
      */
     public static void handleAdminSearchClick(InventoryClickEvent event) {
         event.setCancelled(true);
-        new AdminSearchGui(javaPlugin, (Player) event.getWhoClicked());
+        new SearchAdminGui(javaPlugin, (Player) event.getWhoClicked());
     }
 
     /**
@@ -122,7 +122,7 @@ public class GuiUtils {
     public static void handleAllClick(InventoryClickEvent event, Player sender) {
         event.setCancelled(true);
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new ShopGui(javaPlugin, dsMap, sender, 1);
+        new ListAllGui(javaPlugin, dsMap, sender, 1);
     }
 
     /**

@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.ChatColor;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.PaginatedGui;
@@ -21,27 +22,31 @@ import xzot1k.plugins.ds.api.objects.Shop;
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
 
-public class ShopGui {
+public class ListResultsStringGui {
     DisplayShopAddon64 javaPlugin;
     PaginatedGui gui;
+    String query;
+    int queryType; // the type of query 0="shop", 1="buy", 2="sell"
     String label;
     Player player;
     List<Map.Entry<String, Shop>> dsMap;
     int currentSortIndex = 0;
     
-    public ShopGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player player, int sortIndex) {
+    public ListResultsStringGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player player, String query, int queryType, int sortIndex) {
         this.javaPlugin = javaPlugin;
         this.player = player;
         this.dsMap = new ArrayList<>(dsMap.entrySet());
+        this.query = query;
+        this.queryType = queryType;
         currentSortIndex = sortIndex;
-        label = "All Shops ";
-        gui = new PaginatedGui(6, 45, "All Shops");
+        label = query+" - ";
+        gui = new PaginatedGui(6, 45, query);
         
         preProcessShops();
         ShopUtils.sortShops(this.dsMap, currentSortIndex);
         fillShops();
         setupFooter();
-
+        
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
         gui.open(player);
@@ -68,7 +73,24 @@ public class ShopGui {
                 else if (sellPrice<0 && stock<stackSize && stock!=-1) remove = true; // if sell-to disabled & no stock to buy-from
                 else if (buyPrice<0 && balance<sellPrice && balance!=-1) remove = true; // if buy-from disabled & no money to sell-to
                 else if (stock==0 && balance<sellPrice && balance!=-1) remove = true; // if no stock & no money to sell-to
-            
+                //else if (queryType==1 && buyPrice<0) remove = true; // if searching for buy shops and buy-from is disabled
+                //else if (queryType==2 && sellPrice<0) continue; // if searching for sell shops and sell-to is disabled
+
+            /*check if query matches*/
+                boolean include = false; 
+                ItemStack item = shop.getShopItem().clone();
+                String mat = item.getType().toString().replace("_", " ");
+                ItemMeta meta = item.getItemMeta();
+                String name = meta.getDisplayName();
+                String desc = shop.getDescription();
+                if (StringUtils.containsIgnoreCase(mat, query)) include = true;
+                else if (name!=null && StringUtils.containsIgnoreCase(name, query)) include = true;
+                else if (StringUtils.containsIgnoreCase(desc, query)) include = true;
+                else if (shop.getOwnerUniqueId()!=null) {
+                    String owner = DisplayShopAddon64.repHook.getRepManager().getPlayerUsername(shop.getOwnerUniqueId().toString());
+                    if (owner!=null && StringUtils.containsIgnoreCase(owner, query)) include = true;
+                } if (!include) remove = true;
+                
             if (remove) iter.remove();
         }
     }
@@ -77,8 +99,9 @@ public class ShopGui {
      * Fills the GUI with items from the shop map.
      * Each shop that has a valid shop item and pricing information is converted into a clickable GUI item.
      *
+     * @param queryType the type of query 0="shop", 1="buy", 2="sell"
      */
-    private void fillShops() {
+    private void fillShops() {        
         Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
         while(iter.hasNext()) {
             Map.Entry<String, Shop> entry = iter.next();
@@ -89,8 +112,8 @@ public class ShopGui {
             int stock = shop.getStock();
             ItemStack item = shop.getShopItem().clone();
             ItemMeta meta = item.getItemMeta();
-            List<String> lore = new ArrayList<>();
-            String priceLine = "", name=null;
+            List<String> lore = new ArrayList<>();    
+            String name = meta.getDisplayName(), priceLine = "";
             UUID uuid = shop.getOwnerUniqueId();
 
             GuiUtils.addGuiItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, player);
@@ -109,14 +132,7 @@ public class ShopGui {
         GuiUtils.setGuiItemYourShops(gui, item, meta, lore, player);
 
         // All Shops
-        lore.add("&8-----------------------");
-        lore.add("&eCurrently viewing all shops");
-        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dAll Shops"));
-        item.setItemMeta(meta);
-        item.setType(Material.CHEST);
-        gui.setItem(6, 2, ItemBuilder.from(item).asGuiItem(event -> {event.setCancelled(true);}));
-        lore.clear();
+        GuiUtils.setGuiItemAllShops(gui, item, meta, lore);
 
         // Category
         GuiUtils.setGuiItemCat(gui, item, meta, lore);
@@ -133,7 +149,7 @@ public class ShopGui {
         else gui.setItem(6, 6, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Sort
-        GuiUtils.setGuiItemSortShopsAll(gui, item, meta, lore, currentSortIndex);
+        GuiUtils.setGuiItemSortShopsString(gui, item, meta, lore, query, queryType, currentSortIndex);
 
         // Search
         GuiUtils.setGuiItemSearch(gui, item, meta, lore);
