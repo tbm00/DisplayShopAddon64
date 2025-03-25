@@ -177,7 +177,7 @@ public class ShopCmd implements TabExecutor {
         }
 
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new PlayerResultsGui(javaPlugin, dsMap, sender, targetUUID, targetName, 0);
+        new PlayerResultsGui(javaPlugin, dsMap, sender, targetUUID, targetName, 0, 1);
         return true;
     }
 

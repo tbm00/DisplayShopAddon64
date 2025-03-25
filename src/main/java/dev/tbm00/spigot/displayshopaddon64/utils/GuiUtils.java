@@ -31,10 +31,54 @@ public class GuiUtils {
     private static DisplayShopAddon64 javaPlugin;
     public static final List<String> pendingTeleports = new CopyOnWriteArrayList<>();
     private static boolean editPrevention;
+    public final static String[] SORT_TYPES = {"Unsorted", "Material", "Buy Price", "Sell Price", "Balance", "Stock"};
 
     public static void init(DisplayShopAddon64 javaPlugin, ConfigHandler configHandler) {
         GuiUtils.javaPlugin = javaPlugin;
         editPrevention = configHandler.isDsEditorPrevented();
+    }
+
+    /**
+     * Handles the event when sort shops admin results button is clicked.
+     * 
+     * @param event the inventory click event
+     * @param sortIndex integer for sort alg
+     * @param query the string for open gui
+     */
+    public static void handleSortShopsAdminClick(InventoryClickEvent event, String query, int sortIndex) {
+        event.setCancelled(true);
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        new AdminResultsGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), query, sortIndex);
+    }
+
+    /**
+     * Handles the event when sort shops player results button is clicked.
+     * 
+     */
+    public static void handleSortShopsPlayerClick(InventoryClickEvent event, String targetUUID, String targetName, int queryType, int sortIndex) {
+        event.setCancelled(true);
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        new PlayerResultsGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), targetUUID, targetName, queryType, sortIndex);
+    }
+
+    /**
+     * Handles the event when sort shops string results button is clicked.
+     * 
+     */
+    public static void handleSortShopsStringClick(InventoryClickEvent event, String query, int queryType, int sortIndex) {
+        event.setCancelled(true);
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        new StringResultsGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), query, queryType, sortIndex);
+    }
+
+    /**
+     * Handles the event when sort shops all button is clicked.
+     * 
+     */
+    public static void handleSortShopsAllClick(InventoryClickEvent event, int sortIndex) {
+        event.setCancelled(true);
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        new ShopGui(javaPlugin, dsMap, (Player) event.getWhoClicked(), sortIndex);
     }
 
     /**
@@ -78,7 +122,7 @@ public class GuiUtils {
     public static void handleAllClick(InventoryClickEvent event, Player sender) {
         event.setCancelled(true);
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
-        new ShopGui(javaPlugin, dsMap, sender);
+        new ShopGui(javaPlugin, dsMap, sender, 1);
     }
 
     /**
@@ -276,6 +320,98 @@ public class GuiUtils {
     }
 
     /**
+     * Sets the shop GUI's footer's sort page button format.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     * @param type integer of the sort alg
+     * @param query String of the currently opened gui
+     */
+    public static void setGuiItemSortShopsAdmin(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore, int type, String query) {
+        int next = (type==5) ? 0 : type+1;
+
+        lore.add("&8-----------------------");
+        lore.add("&6Click to change sort order");
+        lore.add("&6("+ SORT_TYPES[type] + " -> " + SORT_TYPES[next] + ")");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fSort Shops"));
+        item.setItemMeta(meta);
+        item.setType(Material.HOPPER);
+        gui.setItem(6, 7, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleSortShopsAdminClick(event, query, next)));
+        lore.clear();
+    }
+
+    /**
+     * Sets the shop GUI's footer's sort page button format.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     * @param query String of the currently opened gui
+     */
+    public static void setGuiItemSortShopsPlayer(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore, String targetUUID, String targetName, int queryType, int sortIndex) {
+        int next = (sortIndex==5) ? 0 : sortIndex+1;
+
+        lore.add("&8-----------------------");
+        lore.add("&6Click to change sort order");
+        lore.add("&6("+ SORT_TYPES[sortIndex] + " -> " + SORT_TYPES[next] + ")");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fSort Shops"));
+        item.setItemMeta(meta);
+        item.setType(Material.HOPPER);
+        gui.setItem(6, 7, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleSortShopsPlayerClick(event, targetUUID, targetName, queryType, next)));
+        lore.clear();
+    }
+
+    /**
+     * Sets the shop GUI's footer's sort page button format.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     * @param query String of the currently opened gui
+     */
+    public static void setGuiItemSortShopsString(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore, String query, int queryType, int sortIndex) {
+        int next = (sortIndex==5) ? 0 : sortIndex+1;
+
+        lore.add("&8-----------------------");
+        lore.add("&6Click to change sort order");
+        lore.add("&6("+ SORT_TYPES[sortIndex] + " -> " + SORT_TYPES[next] + ")");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fSort Shops"));
+        item.setItemMeta(meta);
+        item.setType(Material.HOPPER);
+        gui.setItem(6, 7, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleSortShopsStringClick(event, query, queryType, next)));
+        lore.clear();
+    }
+
+    /**
+     * Sets the shop GUI's footer's sort page button format.
+     *
+     * @param gui the gui that will be sent to the player
+     * @param item holder for current item
+     * @param meta holder for current item's meta
+     * @param lore holder for current item's lore
+     */
+    public static void setGuiItemSortShopsAll(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore, int sortIndex) {
+        int next = (sortIndex==5) ? 0 : sortIndex+1;
+
+        lore.add("&8-----------------------");
+        lore.add("&6Click to change sort order");
+        lore.add("&6("+ SORT_TYPES[sortIndex] + " -> " + SORT_TYPES[next] + ")");
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fSort Shops"));
+        item.setItemMeta(meta);
+        item.setType(Material.HOPPER);
+        gui.setItem(6, 7, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleSortShopsAllClick(event, next)));
+        lore.clear();
+    }
+
+    /**
      * Sets the shop GUI's footer's search page button format.
      *
      * @param gui the gui that will be sent to the player
@@ -365,7 +501,7 @@ public class GuiUtils {
         lore.add(priceLine);
         if (stock<0) lore.add("&7Stock: &e∞");
             else lore.add("&7Stock: &e" + stock);
-        if (stock<0) lore.add("&7Balance: &e$&e∞");
+        if (shop.isAdminShop()) lore.add("&7Balance: &e$&e∞");
             else lore.add("&7Balance: &e$" + Utils.formatInt(balance));
         if (uuid!=null) lore.add("&7Owner: &f" + DisplayShopAddon64.repHook.getRepManager().getPlayerUsername(uuid.toString()));
         lore.add("&7"+shop.getBaseLocation().getWorldName()+": &f"+(int)shop.getBaseLocation().getX()+"&7, &f"
@@ -423,7 +559,7 @@ public class GuiUtils {
         lore.add(priceLine);
         if (stock<0) lore.add("&7Stock: &e∞");
             else lore.add("&7Stock: &e" + stock);
-        if (stock<0) lore.add("&7Balance: &e$&e∞");
+        if (shop.isAdminShop()) lore.add("&7Balance: &e$&e∞");
             else lore.add("&7Balance: &e$" + Utils.formatInt(balance));
         if (uuid!=null) lore.add("&7Owner: &f" + DisplayShopAddon64.repHook.getRepManager().getPlayerUsername(uuid.toString()));
         lore.add("&7"+shop.getBaseLocation().getWorldName()+": &f"+(int)shop.getBaseLocation().getX()+"&7, &f"

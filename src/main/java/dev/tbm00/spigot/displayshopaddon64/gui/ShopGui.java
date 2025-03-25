@@ -1,7 +1,9 @@
 package dev.tbm00.spigot.displayshopaddon64.gui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,60 +25,88 @@ public class ShopGui {
     DisplayShopAddon64 javaPlugin;
     PaginatedGui gui;
     String label;
+    Player player;
+    List<Map.Entry<String, Shop>> dsMap;
+    int currentSortIndex = 0;
     
-    public ShopGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player player) {
+    public ShopGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player player, int sortIndex) {
         this.javaPlugin = javaPlugin;
-        label = "All Shops: Page ";
+        this.player = player;
+        this.dsMap = new ArrayList<>(dsMap.entrySet());
+        currentSortIndex = sortIndex;
+        label = "All Shops ";
         gui = new PaginatedGui(6, 45, "All Shops");
         
-        fillShops(dsMap, player);
-        setupFooter(player);
+        preProcessShops();
+        ShopUtils.sortShops(this.dsMap, currentSortIndex);
+        fillShops();
+        setupFooter();
 
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
         gui.open(player);
     }
 
+    private void preProcessShops() {
+        Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
+        while(iter.hasNext()) {
+            Map.Entry<String, Shop> entry = iter.next();
+            Shop shop = entry.getValue();
+
+            if (shop.getShopItem() == null) { // if no shop item
+                iter.remove();
+                continue;
+            }
+
+            boolean remove = false;
+
+            /*check if valid & active shop*/ 
+                double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false),
+                        balance = shop.getStoredBalance();
+                int stock = shop.getStock(), stackSize = shop.getShopItemAmount();
+                if (buyPrice<0 && sellPrice<0) remove = true; // if buy-from & sell-to are both disabled
+                else if (sellPrice<0 && stock<stackSize && stock!=-1) remove = true; // if sell-to disabled & no stock to buy-from
+                else if (buyPrice<0 && balance<sellPrice && balance!=-1) remove = true; // if buy-from disabled & no money to sell-to
+                else if (stock==0 && balance<sellPrice && balance!=-1) remove = true; // if no stock & no money to sell-to
+            
+            if (remove) iter.remove();
+        }
+    }
+
     /**
      * Fills the GUI with items from the shop map.
      * Each shop that has a valid shop item and pricing information is converted into a clickable GUI item.
      *
-     * @param dsMap a concurrent hash map of shop identifiers to Shop objects
-     * @param player the player for whom the GUI is being built
      */
-    private void fillShops(ConcurrentHashMap<String, Shop> dsMap, Player player) {
-        for (Shop shop : dsMap.values()) {
-            /*check if valid & active shop*/ 
-                if (shop.getShopItem()==null) continue; // if no shop item
-                double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false);
-                if (buyPrice<0 && sellPrice<0) continue; // if buy & sell are both disabled
-                double balance = shop.getStoredBalance();
-                if (buyPrice<0 && balance<1) continue; // if buy disabled & no money to sell
-                int stock = shop.getStock();
-                if (sellPrice<0 && stock==0) continue; // if sell disabled & no stock to buy
-                if (stock==0 && balance==0) continue; // // if no stock & no balance to buy
+    private void fillShops() {
+        Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
+        while(iter.hasNext()) {
+            Map.Entry<String, Shop> entry = iter.next();
+            Shop shop = entry.getValue();
 
-            /*define item button's lore, name, flags, etc*/
-                ItemStack item = shop.getShopItem().clone();
-                ItemMeta meta = item.getItemMeta();
-                List<String> lore = new ArrayList<>();
-                String priceLine = "", name=null;
-                UUID uuid = shop.getOwnerUniqueId();
+            double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false),
+                    balance = shop.getStoredBalance();
+            int stock = shop.getStock();
+            ItemStack item = shop.getShopItem().clone();
+            ItemMeta meta = item.getItemMeta();
+            List<String> lore = new ArrayList<>();
+            String priceLine = "", name=null;
+            UUID uuid = shop.getOwnerUniqueId();
 
-                GuiUtils.addGuiItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, player);
+            GuiUtils.addGuiItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, player);
         }
     }
 
     /**
      * Sets up the footer of the GUI with categories & all other buttons.
      */
-    private void setupFooter(Player sender) {
+    private void setupFooter() {
         ItemStack item = new ItemStack(Material.GLASS);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
 
         // Your Shops
-        GuiUtils.setGuiItemYourShops(gui, item, meta, lore, sender);
+        GuiUtils.setGuiItemYourShops(gui, item, meta, lore, player);
 
         // All Shops
         lore.add("&8-----------------------");
@@ -103,7 +133,7 @@ public class ShopGui {
         else gui.setItem(6, 6, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Sort
-        gui.setItem(6, 7, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
+        GuiUtils.setGuiItemSortShopsAll(gui, item, meta, lore, currentSortIndex);
 
         // Search
         GuiUtils.setGuiItemSearch(gui, item, meta, lore);

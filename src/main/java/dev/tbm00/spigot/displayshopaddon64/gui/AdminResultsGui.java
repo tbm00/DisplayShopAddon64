@@ -1,7 +1,9 @@
 package dev.tbm00.spigot.displayshopaddon64.gui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,10 +27,16 @@ public class AdminResultsGui {
     PaginatedGui gui;
     String query;
     String label;
+    Player sender;
+    List<Map.Entry<String, Shop>> dsMap;
+    int currentSortIndex = 0;
     
-    public AdminResultsGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player sender, String query) {
+    public AdminResultsGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player sender, String query, int sortIndex) {
         this.javaPlugin = javaPlugin;
+        this.sender = sender;
+        this.dsMap = new ArrayList<>(dsMap.entrySet());;
         this.query = query;
+        currentSortIndex = sortIndex;
 
         String name = DisplayShopAddon64.repHook.getRepManager().getPlayerUsername(query);
         if (name!=null) label = name+" - ";
@@ -36,37 +44,27 @@ public class AdminResultsGui {
         
         gui = new PaginatedGui(6, 45, query);
         
-        fillShops(dsMap, sender, query);
-        setupFooter(sender);
+        preProcessShops();
+        ShopUtils.sortShops(this.dsMap, currentSortIndex);
+        fillShops();
+        setupFooter();
         
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
         gui.open(sender);
     }
 
-    /**
-     * Fills the GUI with items from the shop map.
-     * Each shop that has a valid shop item and pricing information is converted into a clickable GUI item.
-     *
-     * @param dsMap a concurrent hash map of shop identifiers to Shop objects
-     * @param sender the player for whom the GUI is being built
-     */
-    private void fillShops(ConcurrentHashMap<String, Shop> dsMap, Player sender, String query) {
-        for (Shop shop : dsMap.values()) {
-            /*check if valid & active shop*/ 
-                double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false);
-                double balance = shop.getStoredBalance();
-                int stock = shop.getStock();
-                boolean empty = false;
+    private void preProcessShops() {
+        Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
+        while(iter.hasNext()) {
+            Map.Entry<String, Shop> entry = iter.next();
+            Shop shop = entry.getValue();
+
+            boolean remove = false;
 
             /*check if query matches*/ 
-                boolean include = false;
-                ItemStack item;
-                if (shop.getShopItem()==null) {
-                    item = new ItemStack(Material.BARRIER, 1);
-                    empty = true;
-                }
-                else item = shop.getShopItem().clone();
+                boolean include = false; 
+                ItemStack item = shop.getShopItem().clone();
                 String mat = item.getType().toString().replace("_", " ");
                 ItemMeta meta = item.getItemMeta();
                 String name = meta.getDisplayName();
@@ -77,21 +75,45 @@ public class AdminResultsGui {
                 else if (shop.getOwnerUniqueId()!=null) {
                     String owner = DisplayShopAddon64.repHook.getRepManager().getPlayerUsername(shop.getOwnerUniqueId().toString());
                     if (owner!=null && StringUtils.containsIgnoreCase(owner, query)) include = true;
-                } if (!include) continue;
-            
-            /*define item button's lore, name, etc. and add to gui*/
-                List<String> lore = new ArrayList<>();    
-                String priceLine = "";
-                UUID uuid = shop.getOwnerUniqueId();
+                } if (!include) remove = true;
+                
+            if (remove) iter.remove();
+        }
+    }
+    /**
+     * Fills the GUI with items from the shop map.
+     * Each shop that has a valid shop item and pricing information is converted into a clickable GUI item.
+     */
+    private void fillShops() {        
+        Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
+        while(iter.hasNext()) {
+            Map.Entry<String, Shop> entry = iter.next();
+            Shop shop = entry.getValue();
 
-                GuiUtils.addGuiAdminItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, sender, empty);
+            double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false),
+                    balance = shop.getStoredBalance();
+            int stock = shop.getStock();
+            boolean empty = false;
+            ItemStack item;
+
+            if (shop.getShopItem()==null) {
+                item = new ItemStack(Material.BARRIER, 1);
+                empty = true;
+            } else item = shop.getShopItem().clone();
+
+            ItemMeta meta = item.getItemMeta();
+            List<String> lore = new ArrayList<>();    
+            String name = meta.getDisplayName(), priceLine = "";
+            UUID uuid = shop.getOwnerUniqueId();
+
+            GuiUtils.addGuiAdminItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, sender, empty);
         }
     }
 
     /**
      * Sets up the footer of the GUI with categories & all other buttons.
      */
-    private void setupFooter(Player sender) {
+    private void setupFooter() {
         ItemStack item = new ItemStack(Material.GLASS);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
@@ -117,7 +139,7 @@ public class AdminResultsGui {
         else gui.setItem(6, 6, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Sort
-        gui.setItem(6, 7, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
+        GuiUtils.setGuiItemSortShopsAdmin(gui, item, meta, lore, currentSortIndex, query);
 
         // Search
         GuiUtils.setGuiAdminItemSearch(gui, item, meta, lore);
