@@ -21,7 +21,7 @@ import xzot1k.plugins.ds.api.objects.Shop;
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.utils.*;
 
-public class ListAllGui {
+public class ListAllAdminGui {
     DisplayShopAddon64 javaPlugin;
     PaginatedGui gui;
     String label;
@@ -29,15 +29,14 @@ public class ListAllGui {
     List<Map.Entry<String, Shop>> dsMap;
     int currentSortIndex = 0;
     
-    public ListAllGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player player, int sortIndex) {
+    public ListAllAdminGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player player, int sortIndex) {
         this.javaPlugin = javaPlugin;
         this.player = player;
         this.dsMap = new ArrayList<>(dsMap.entrySet());
         currentSortIndex = sortIndex;
-        label = "All Shops - ";
-        gui = new PaginatedGui(6, 45, "All Shops");
+        label = "All Shops (ADMIN) - ";
+        gui = new PaginatedGui(6, 45, "All Shops (ADMIN)");
         
-        preProcessShops();
         ShopUtils.sortShops(this.dsMap, currentSortIndex);
         fillShops();
         setupFooter();
@@ -45,32 +44,6 @@ public class ListAllGui {
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
         gui.open(player);
-    }
-
-    private void preProcessShops() {
-        Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
-        while(iter.hasNext()) {
-            Map.Entry<String, Shop> entry = iter.next();
-            Shop shop = entry.getValue();
-
-            if (shop.getShopItem() == null) { // if no shop item
-                iter.remove();
-                continue;
-            }
-
-            boolean remove = false;
-
-            /*check if valid & active shop*/ 
-                double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false),
-                        balance = shop.getStoredBalance();
-                int stock = shop.getStock(), stackSize = shop.getShopItemAmount();
-                if (buyPrice<0 && sellPrice<0) remove = true; // if buy-from & sell-to are both disabled
-                else if (sellPrice<0 && stock<stackSize && stock!=-1) remove = true; // if sell-to disabled & no stock to buy-from
-                else if (buyPrice<0 && balance<sellPrice && balance!=-1) remove = true; // if buy-from disabled & no money to sell-to
-                else if (stock==0 && balance<sellPrice && balance!=-1) remove = true; // if no stock & no money to sell-to
-            
-            if (remove) iter.remove();
-        }
     }
 
     /**
@@ -87,13 +60,20 @@ public class ListAllGui {
             double buyPrice = shop.getBuyPrice(false), sellPrice = shop.getSellPrice(false),
                     balance = shop.getStoredBalance();
             int stock = shop.getStock();
-            ItemStack item = shop.getShopItem().clone();
+            boolean empty = false;
+            ItemStack item;
+
+            if (shop.getShopItem()==null) {
+                item = new ItemStack(Material.BARRIER, 1);
+                empty = true;
+            } else item = shop.getShopItem().clone();
+
             ItemMeta meta = item.getItemMeta();
-            List<String> lore = new ArrayList<>();
-            String priceLine = "", name=null;
+            List<String> lore = new ArrayList<>();    
+            String name = meta.getDisplayName(), priceLine = "";
             UUID uuid = shop.getOwnerUniqueId();
 
-            GuiUtils.addGuiItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, player);
+            GuiUtils.addGuiAdminItemShop(gui, shop, item, meta, lore, balance, buyPrice, sellPrice, priceLine, stock, uuid, name, player, empty);
         }
     }
 
@@ -110,7 +90,7 @@ public class ListAllGui {
 
         // All Shops
         lore.add("&8-----------------------");
-        lore.add("&eCurrently viewing all shops");
+        lore.add("&eCurrently viewing all shops &c(ADMIN)");
         lore.add("&e(sorted by " + GuiUtils.SORT_TYPES[currentSortIndex] + ")");
         meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dAll Shops"));
@@ -134,10 +114,10 @@ public class ListAllGui {
         else gui.setItem(6, 6, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Sort
-        GuiUtils.setGuiItemSortShopsAll(gui, item, meta, lore, currentSortIndex);
+        GuiUtils.setGuiItemSortShopsAdminAll(gui, item, meta, lore, currentSortIndex);
 
         // Search
-        GuiUtils.setGuiItemSearch(gui, item, meta, lore);
+        GuiUtils.setGuiAdminItemSearch(gui, item, meta, lore);
         
         // Main Menu
         GuiUtils.setGuiItemMainMenu(gui, item, meta, lore);

@@ -56,6 +56,18 @@ public class ShopUtils {
     }
 
     /**
+     * Handles the sub command for opening the shop gui.
+     * 
+     * @param player the command sender
+     * @return true after creating gui instance
+     */
+    public static boolean handleGuiAdminCmd(Player player) {
+        ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
+        new ListAllAdminGui(javaPlugin, dsMap, player, 1);
+        return true;
+    }
+
+    /**
      * Handles searching the shops by String/player
      * 
      * @param sender the command sender
@@ -249,6 +261,107 @@ public class ShopUtils {
      * Used by GUIs
      */
     public static void sortShops(List<Map.Entry<String, Shop>> dsMap, int index) {
+        switch (index) {
+            case 0: // Unsorted
+                break;
+
+            case 1: // Material
+                dsMap.sort((e1, e2) -> {
+                    Shop s1 = e1.getValue();
+                    Shop s2 = e2.getValue();
+                    
+                    if (s1.getShopItem() == null || s1.getShopItem().getType() == null) {
+                        if (s2.getShopItem() == null || s2.getShopItem().getType() == null) return 0; // no movement
+                        return 1; // s1 goes after s2
+                    }
+                    if (s2.getShopItem() == null || s2.getShopItem().getType() == null) {
+                        return -1; // s2 goes after s1
+                    }
+                    
+                    String mat1 = s1.getShopItem().getType().toString().replace("_", " ");
+                    String mat2 = s2.getShopItem().getType().toString().replace("_", " ");
+                    return mat1.compareToIgnoreCase(mat2);
+                });
+                break;
+
+            case 2: // Buy Price per Item
+                dsMap.sort((e1, e2) -> {
+                    Shop s1 = e1.getValue();
+                    Shop s2 = e2.getValue();
+                    double buy1 = s1.getBuyPrice(false);
+                    double buy2 = s2.getBuyPrice(false);
+
+                    if (buy1 == -1 && buy2 == -1) return 0; // no movement
+                    if (buy1 == -1) return 1;  // s1 goes after s2
+                    if (buy2 == -1) return -1; // s2 goes after s1
+
+                    double unit1 = buy1 / s1.getShopItemAmount();
+                    double unit2 = buy2 / s2.getShopItemAmount();
+                    return Double.compare(unit1, unit2);
+                });
+                break;
+
+            case 3: // Sell Price per Item
+                dsMap.sort((e1, e2) -> {
+                    Shop s1 = e1.getValue();
+                    Shop s2 = e2.getValue();
+                    double sell1 = s1.getSellPrice(false);
+                    double sell2 = s2.getSellPrice(false);
+
+                    if (sell1 == -1 && sell2 == -1) return 0; // no movement
+                    if (sell1 == -1) return 1;  // s1 goes after s2
+                    if (sell2 == -1) return -1; // s2 goes after s1
+
+                    double unit1 = sell1 / s1.getShopItemAmount();
+                    double unit2 = sell2 / s2.getShopItemAmount();
+                    return Double.compare(unit2, unit1);
+                });
+                break;
+
+            case 4: // Stored Balance
+                dsMap.sort((e1, e2) -> {
+                    Shop s1 = e1.getValue();
+                    Shop s2 = e2.getValue();
+                    double bal1 = s1.getStoredBalance();
+                    double bal2 = s2.getStoredBalance();
+
+                    if (s1.isAdminShop() && s2.isAdminShop()) return 0;  // s1 goes after s2
+                    if (s1.isAdminShop()) return -1;  // s2 goes after s1
+                    if (s2.isAdminShop()) return 1;   // s1 goes after s2
+
+                    if (bal1 == -1 && bal2 == -1) return 0; // no movement
+                    if (bal1 == -1) return -1;  // s2 goes after s1
+                    if (bal2 == -1) return 1;   // s1 goes after s2
+                    return Double.compare(bal2, bal1);
+                });
+                break;
+
+            case 5: // Stored Stock
+                dsMap.sort((e1, e2) -> {
+                    Shop s1 = e1.getValue();
+                    Shop s2 = e2.getValue();
+                    int stock1 = s1.getStock();
+                    int stock2 = s2.getStock();
+
+                    if (stock1 == -1 && stock2 == -1) return 0; // no movement
+                    if (stock1 == -1) return -1; // s2 goes after s1
+                    if (stock2 == -1) return 1;  // s1 goes after s2
+
+                    return Integer.compare(stock2, stock1);
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Sorts the shop map by the current index.
+     * 
+     * Used by GUIs
+     */
+    public static void sortShopsAdmin(List<Map.Entry<String, Shop>> dsMap, int index) {
         switch (index) {
             case 0: // Unsorted
                 break;

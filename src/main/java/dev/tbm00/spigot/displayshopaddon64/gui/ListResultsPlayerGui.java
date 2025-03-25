@@ -26,6 +26,7 @@ public class ListResultsPlayerGui {
     DisplayShopAddon64 javaPlugin;
     PaginatedGui gui;
     String targetName;
+    String targetUUID;
     String label;
     Player sender;
     List<Map.Entry<String, Shop>> dsMap;
@@ -35,6 +36,7 @@ public class ListResultsPlayerGui {
     public ListResultsPlayerGui(DisplayShopAddon64 javaPlugin, ConcurrentHashMap<String, Shop> dsMap, Player sender, String targetUUID, String targetName, int queryType, int sortIndex) {
         this.javaPlugin = javaPlugin;
         this.targetName = targetName;
+        this.targetUUID = targetUUID;
         this.sender = sender;
         this.dsMap = new ArrayList<>(dsMap.entrySet());
         this.queryType = queryType;
@@ -42,17 +44,17 @@ public class ListResultsPlayerGui {
         label = targetName+" - ";
         gui = new PaginatedGui(6, 45, targetName);
         
-        preProcessShops(targetUUID);
+        preProcessShops();
         ShopUtils.sortShops(this.dsMap, currentSortIndex);
-        fillShops(targetUUID);
-        setupFooter(targetUUID);
+        fillShops();
+        setupFooter();
         
         gui.updateTitle(label + gui.getCurrentPageNum() + "/" + gui.getPagesNum());
         gui.disableAllInteractions();
         gui.open(sender);
     }
 
-    private void preProcessShops(String targetUUID) {
+    private void preProcessShops() {
         Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
         while(iter.hasNext()) {
             Map.Entry<String, Shop> entry = iter.next();
@@ -81,7 +83,7 @@ public class ListResultsPlayerGui {
      * Fills the GUI with items from the shop map.
      * Each shop that has a valid shop item and pricing information is converted into a clickable GUI item.
      */
-    private void fillShops(String targetUUID) {
+    private void fillShops() {
         Iterator<Map.Entry<String, Shop>> iter = dsMap.iterator();
         while(iter.hasNext()) {
             Map.Entry<String, Shop> entry = iter.next();
@@ -102,7 +104,7 @@ public class ListResultsPlayerGui {
     /**
      * Sets up the footer of the GUI with all, page next, page back, and search buttons.
      */
-    private void setupFooter(String targetUUID) {
+    private void setupFooter() {
         ItemStack item = new ItemStack(Material.GLASS);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
@@ -113,6 +115,7 @@ public class ListResultsPlayerGui {
             SkullMeta headmeta = (SkullMeta) item.getItemMeta();
             lore.add("&8-----------------------");
             lore.add("&eCurrently viewing your shops");
+            lore.add("&e(sorted by " + GuiUtils.SORT_TYPES[currentSortIndex] + ")");
             headmeta.setOwningPlayer(sender);
             headmeta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
             headmeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
@@ -139,7 +142,7 @@ public class ListResultsPlayerGui {
         else gui.setItem(6, 6, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Sort
-        GuiUtils.setGuiItemSortShopsPlayer(gui, item, meta, lore, targetUUID, targetUUID, queryType, currentSortIndex);
+        GuiUtils.setGuiItemSortShopsPlayer(gui, item, meta, lore, targetUUID, targetName, queryType, currentSortIndex);
 
         // Search
         GuiUtils.setGuiItemSearch(gui, item, meta, lore);

@@ -122,7 +122,7 @@ public class ListResultsAdminGui {
         GuiUtils.setGuiItemYourShops(gui, item, meta, lore, sender);
 
         // All Shops
-        GuiUtils.setGuiItemAllShops(gui, item, meta, lore);
+        GuiUtils.setGuiItemAllShopsAdmin(gui, item, meta, lore);
 
         // Category
         GuiUtils.setGuiItemCat(gui, item, meta, lore);
@@ -139,7 +139,7 @@ public class ListResultsAdminGui {
         else gui.setItem(6, 6, ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).setName(" ").asGuiItem(event -> event.setCancelled(true)));
 
         // Sort
-        GuiUtils.setGuiItemSortShopsAdmin(gui, item, meta, lore, currentSortIndex, query);
+        GuiUtils.setGuiItemSortShopsAdminQuery(gui, item, meta, lore, currentSortIndex, query);
 
         // Search
         GuiUtils.setGuiAdminItemSearch(gui, item, meta, lore);

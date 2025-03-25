@@ -43,7 +43,8 @@ Created by tbm00 for play.mc64.wtf.
 - `/testshop withdraw-all max/<#>` Withdraw money from all your shops
 
 #### Admin Commands
-- `/testshopsadmin <player/item>` Manage all <item/player> shops
+- `/testshopsadmin` View/manage all shops
+- `/testshopsadmin <player/item>` View/manage all <item/player> shops
 - `/testshopsadmin transfer <playerFrom> <playerTo>` Change shops' owner
 - `/testshopsadmin [pos1/pos2/copy]` Set copy positions
 - `/testshopsadmin paste` Set paste position & paste
@@ -62,7 +63,7 @@ Created by tbm00 for play.mc64.wtf.
 
 ## Config
 ```
-# DisplayShopAddon64 v0.0.7-beta by @tbm00
+# DisplayShopAddon64 v0.0.8-beta by @tbm00
 # https://github.com/tbm00/DisplayShopAddon64
 
 enabled: true

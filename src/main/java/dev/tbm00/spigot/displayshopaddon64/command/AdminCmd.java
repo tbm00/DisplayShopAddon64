@@ -44,7 +44,7 @@ public class AdminCmd implements TabExecutor {
 
         Player player = (Player) sender;
 
-        if (args.length == 0) return handleHelpCmd(player);
+        if (args.length == 0) return ShopUtils.handleGuiAdminCmd(player);
 
         String subCmd = args[0].toLowerCase();
         switch (subCmd) {
@@ -62,6 +62,8 @@ public class AdminCmd implements TabExecutor {
                 return handlePasteCmd(player);
             case "count":
                 return handleCountCmd(player);
+            case "gui":
+                return ShopUtils.handleGuiAdminCmd(player);
             default:
                 return ShopUtils.handleAdminSearch(player, args);
         }
@@ -75,7 +77,8 @@ public class AdminCmd implements TabExecutor {
      */
     private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shop Admin Commands" + ChatColor.DARK_PURPLE + " ---\n"
-            + ChatColor.WHITE + "/testshopadmin <item/player>" + ChatColor.GRAY + " Manage all <item/player> shops\n"
+            + ChatColor.WHITE + "/testshopadmin" + ChatColor.GRAY + " View/manage all shops\n"
+            + ChatColor.WHITE + "/testshopadmin <item/player>" + ChatColor.GRAY + " View/manage all <item/player> shops\n"
             + ChatColor.WHITE + "/testshopadmin transfer <playerTo> <playerFrom>" + ChatColor.GRAY + " Change shops' owner\n"
             + ChatColor.WHITE + "/testshopadmin [pos1/pos2/copy]" + ChatColor.GRAY + " Set copy positions\n"
             + ChatColor.WHITE + "/testshopadmin paste" + ChatColor.GRAY + " Set paste position & paste"
