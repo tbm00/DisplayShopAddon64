@@ -255,14 +255,12 @@ public class GuiUtils {
      * @param player player whose shops to open
      */
     public static void setGuiItemYourShops(PaginatedGui gui, ItemStack item, ItemMeta meta, List<String> lore, Player player) {
-        item.setType(Material.PLAYER_HEAD);
-        SkullMeta headmeta = (SkullMeta) item.getItemMeta();
+        item.setType(Material.ENDER_CHEST);
         lore.add("&8-----------------------");
         lore.add("&6Click to view/manage your shops");
-        headmeta.setOwningPlayer(player);
-        headmeta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-        headmeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
-        item.setItemMeta(headmeta);
+        meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
+        item.setItemMeta(meta);
         gui.setItem(6, 1, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "testshop list")));
         lore.clear();
     }

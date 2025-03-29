@@ -111,15 +111,13 @@ public class ListResultsPlayerGui {
 
         // Your Shops
         if (targetUUID.equals(sender.getUniqueId().toString())) {
-            item.setType(Material.PLAYER_HEAD);
-            SkullMeta headmeta = (SkullMeta) item.getItemMeta();
+            item.setType(Material.ENDER_CHEST);
             lore.add("&8-----------------------");
             lore.add("&eCurrently viewing your shops");
             lore.add("&e(sorted by " + GuiUtils.SORT_TYPES[currentSortIndex] + ")");
-            headmeta.setOwningPlayer(sender);
-            headmeta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
-            headmeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
-            item.setItemMeta(headmeta);
+            meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
+            item.setItemMeta(meta);
             gui.setItem(6, 1, ItemBuilder.from(item).asGuiItem(event -> {event.setCancelled(true);}));
             lore.clear();
         } else GuiUtils.setGuiItemYourShops(gui, item, meta, lore, sender);
