@@ -138,7 +138,7 @@ public class ShopCmd implements TabExecutor {
      */
     private boolean handleBuyCmd(Player player, String[] args) {
         String count;
-        if (args[1]==null || args[2].isBlank()) count = "1";
+        if (args[1]==null || args[1].isBlank()) count = "1";
         else count = args[1];
 
         Utils.sudoCommand(player, "ds buy "+count);
