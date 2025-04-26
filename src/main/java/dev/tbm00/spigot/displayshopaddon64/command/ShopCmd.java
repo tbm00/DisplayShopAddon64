@@ -137,12 +137,35 @@ public class ShopCmd implements TabExecutor {
      * @return true after sudoing the command
      */
     private boolean handleBuyCmd(Player player, String[] args) {
-        String count;
-        if (args[1]==null || args[1].isBlank()) count = "1";
-        else count = args[1];
+        int count;
+        if (args.length<2 || args[1]==null || args[1].isBlank()) count = 1;
+        else {
+            try {
+                count = Integer.valueOf(args[1]);
+            } catch (NumberFormatException e) {
+                Utils.sendMessage(player, "&cAmount must be an integer!");
+                return true;
+            }
+        }
 
-        Utils.sudoCommand(player, "ds buy "+count);
-        return true;
+        int totalPrice = configHandler.getDSCreationItemPrice() * count;
+        double pocketBal = DisplayShopAddon64.ecoHook.getBalance(player);
+
+        if (totalPrice>pocketBal) {
+            Utils.sendMessage(player, "&cYou do not have the $" + Utils.formatInt(totalPrice) + " required to buy " + count + " shop items!");
+            return true;
+        } else {
+            if (Utils.removeMoney(player, totalPrice)) {
+                ItemStack shopItem = DisplayShopAddon64.dsHook.getManager().buildShopCreationItem(player, count);
+                shopItem.setAmount(count);
+                Utils.giveItem(player, shopItem);
+                Utils.sendMessage(player, "&aYou bought " + count + " shop items for $" + Utils.formatInt(totalPrice) + "!");
+                return true;
+            } else {
+                Utils.sendMessage(player, "&cAn error occured when buying the shop item(s)!");
+                return true;
+            } 
+        }
     }
     
     /**

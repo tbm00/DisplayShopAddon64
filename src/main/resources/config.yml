@@ -10,6 +10,7 @@ feature:
   enabled: true
   dsMaxStoredBalance: 20000000
   dsMaxStoredStock: 8192
+  dsCreationItemPrice: 4000
   guiDefaultCategory: "shopgui"
   dsDescChange: true
   dsEditorPrevention: true
