@@ -110,6 +110,7 @@ Desktop.ini
 #############
 
 offline/
+depend/
 
 # Compiled class file
 *.class
