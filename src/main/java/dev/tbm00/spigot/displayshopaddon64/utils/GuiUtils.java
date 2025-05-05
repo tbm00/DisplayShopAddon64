@@ -13,16 +13,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.PaginatedGui;
-
+import xzot1k.plugins.ds.api.objects.Menu;
 import xzot1k.plugins.ds.api.objects.Shop;
 import xzot1k.plugins.ds.api.enums.EditType;
 import xzot1k.plugins.ds.api.events.ShopEditEvent;
-
+import xzot1k.plugins.ds.api.events.ShopTransactionEvent;
 import dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64;
 import dev.tbm00.spigot.displayshopaddon64.ConfigHandler;
 import dev.tbm00.spigot.displayshopaddon64.gui.*;
@@ -175,7 +174,7 @@ public class GuiUtils {
         event.setCancelled(true);
         
         if (event.isShiftClick() && sender.getUniqueId().equals(shop.getOwnerUniqueId())) {
-            openShopMenu(sender, shop);
+            openShopManageMenu(sender, shop);
         } else ShopUtils.teleportPlayerToShop(sender, shop);
     }
 
@@ -190,7 +189,7 @@ public class GuiUtils {
         event.setCancelled(true);
         
         if (event.isShiftClick()) {
-            openShopMenu(sender, shop);
+            openShopManageMenu(sender, shop);
         } else ShopUtils.teleportPlayerToShop(sender, shop);
     }
 
@@ -213,7 +212,51 @@ public class GuiUtils {
      * @param sender the player who clicked the shop item
      * @param shop the shop associated with the clicked item
      */
-    private static void openShopMenu(Player player, Shop shop) {
+    private static void openShopBuyerMenu(Player player, Shop shop) {
+        if (editPrevention && shop.getCurrentEditor()!=null && !shop.getCurrentEditor().toString().equals(player.getUniqueId().toString())) {
+            if (javaPlugin.getServer().getOfflinePlayer(shop.getCurrentEditor()).isOnline()) {
+                Utils.sendMessage(player, "&cShop currently under going edits by " + javaPlugin.getServer().getOfflinePlayer(shop.getCurrentEditor()).getName());
+                return;
+            }
+        }
+
+        ShopTransactionEvent shopTransactionEvent = new ShopTransactionEvent(player, shop);
+        javaPlugin.getServer().getPluginManager().callEvent(shopTransactionEvent);
+        if (shopTransactionEvent.isCancelled()) {
+            Utils.sendMessage(player, "&cShop open event canceled somewhere along the way..!");
+            return;
+        }
+
+        DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
+        if (DisplayShopAddon64.dsHook.getManager().getDataPack(player)==null) {
+            Utils.sendMessage(player, "&cYour DS data pack is null");
+            return;
+        }
+        
+        Menu transactionMenu = DisplayShopAddon64.dsHook.getMenu("transaction");
+        if (transactionMenu == null) {
+            Utils.sendMessage(player, "&cTransaction menu returned null..!");
+            return;
+        } else transactionMenu.build(player);
+        
+        DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
+        Bukkit.getScheduler().runTaskLater(javaPlugin, () -> {
+            DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
+        }, 1);
+
+        DisplayShopAddon64.dsHook.runEventCommands("shop-open", player);
+    }
+
+    /**
+     * Opens the DisplayShops' menu for that particular shop.
+     * 
+     * This should build the menu for the player, and set the shop's current editor
+     * 
+     * @param event the inventory click event
+     * @param sender the player who clicked the shop item
+     * @param shop the shop associated with the clicked item
+     */
+    private static void openShopManageMenu(Player player, Shop shop) {
         if (editPrevention && shop.getCurrentEditor()!=null && !shop.getCurrentEditor().toString().equals(player.getUniqueId().toString())) {
             if (javaPlugin.getServer().getOfflinePlayer(shop.getCurrentEditor()).isOnline()) {
                 Utils.sendMessage(player, "&cShop currently under going edits by " + javaPlugin.getServer().getOfflinePlayer(shop.getCurrentEditor()).getName());
@@ -231,18 +274,23 @@ public class GuiUtils {
         if (editPrevention) shop.setCurrentEditor(player.getUniqueId());
 
         DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
-
         if (DisplayShopAddon64.dsHook.getManager().getDataPack(player)==null) {
             Utils.sendMessage(player, "&cYour DS data pack is null");
             return;
         }
 
-        DisplayShopAddon64.dsHook.getMenu("edit").build(player);
-        DisplayShopAddon64.dsHook.runEventCommands("shop-edit", player);
+        Menu editMenu = DisplayShopAddon64.dsHook.getMenu("edit");
+        if (editMenu == null) {
+            Utils.sendMessage(player, "&cManage menu (edit) returned null..!");
+            return;
+        } else editMenu.build(player);
 
+        DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
         Bukkit.getScheduler().runTaskLater(javaPlugin, () -> {
             DisplayShopAddon64.dsHook.getManager().getDataPack(player).setSelectedShop(shop);
         }, 1);
+
+        DisplayShopAddon64.dsHook.runEventCommands("shop-edit", player);
     }
 
     /**
