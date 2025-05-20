@@ -47,12 +47,11 @@ public class DisplayShopAddon64 extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(new PlayerMovement(), this);
                 
                 // Register Commands
-                getCommand("testshop").setExecutor(new ShopCmd(this, configHandler));
-                getCommand("testbuy").setExecutor(new BuyCmd(configHandler));
-                getCommand("testsell").setExecutor(new SellCmd(this, configHandler));
-                getCommand("testsellgui").setExecutor(new SellGuiCmd(this));
-                getCommand("testsellinv").setExecutor(new SellInvCmd());
-                getCommand("testshopadmin").setExecutor(new AdminCmd());
+                getCommand("shop").setExecutor(new ShopCmd(this, configHandler));
+                getCommand("buy").setExecutor(new BuyCmd(configHandler));
+                getCommand("sell").setExecutor(new SellCmd(this, configHandler));
+                getCommand("sellgui").setExecutor(new SellGuiCmd(this));
+                getCommand("shopadmin").setExecutor(new AdminCmd());
 
                 if (configHandler.isDsDescChanged()) {
                     new DescChangeTask();

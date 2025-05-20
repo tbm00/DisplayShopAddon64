@@ -26,7 +26,7 @@ public class BuyCmd implements TabExecutor {
     }
 
     /**
-     * Handles the /testbuy & command.
+     * Handles the /buy & command.
      * 
      * @param player the command sender
      * @param consoleCommand the command being executed
@@ -70,6 +70,8 @@ public class BuyCmd implements TabExecutor {
             case "farm":
             case "farming":
                 return ShopUtils.handleCategoryCmd(player, "shopfarm");
+            case "redstone":
+                return ShopUtils.handleCategoryCmd(player, "shopredstone");
             case "gui":
                 return ShopUtils.handleGuiCmd(player);
             default:
@@ -85,15 +87,15 @@ public class BuyCmd implements TabExecutor {
      */
     private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
-            + ChatColor.WHITE + "/testbuy" + ChatColor.GRAY + " Open shop category GUI\n"
-            + ChatColor.WHITE + "/testbuy <item>" + ChatColor.GRAY + " Find all <item> shops you can buy from\n"
-            + ChatColor.WHITE + "/testbuy <player>" + ChatColor.GRAY + " Find all <player>'s shops you can buy from"
+            + ChatColor.WHITE + "/buy" + ChatColor.GRAY + " Open shop category GUI\n"
+            + ChatColor.WHITE + "/buy <item>" + ChatColor.GRAY + " Find all <item> shops you can buy from\n"
+            + ChatColor.WHITE + "/buy <player>" + ChatColor.GRAY + " Find all <player>'s shops you can buy from"
         );
         return true;
     }
 
     /**
-     * Handles tab completion for the /testbuy command.
+     * Handles tab completion for the /buy command.
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

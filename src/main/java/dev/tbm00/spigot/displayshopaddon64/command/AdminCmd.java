@@ -27,7 +27,7 @@ public class AdminCmd implements TabExecutor {
     public AdminCmd() {}
 
     /**
-     * Handles the /testshopadmin command.
+     * Handles the /shopadmin command.
      * 
      * @param player the command sender
      * @param consoleCommand the command being executed
@@ -77,11 +77,11 @@ public class AdminCmd implements TabExecutor {
      */
     private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shop Admin Commands" + ChatColor.DARK_PURPLE + " ---\n"
-            + ChatColor.WHITE + "/testshopadmin" + ChatColor.GRAY + " View/manage all shops\n"
-            + ChatColor.WHITE + "/testshopadmin <item/player>" + ChatColor.GRAY + " View/manage all <item/player> shops\n"
-            + ChatColor.WHITE + "/testshopadmin transfer <playerTo> <playerFrom>" + ChatColor.GRAY + " Change shops' owner\n"
-            + ChatColor.WHITE + "/testshopadmin [pos1/pos2/copy]" + ChatColor.GRAY + " Set copy positions\n"
-            + ChatColor.WHITE + "/testshopadmin paste" + ChatColor.GRAY + " Set paste position & paste"
+            + ChatColor.WHITE + "/shopadmin" + ChatColor.GRAY + " View/manage all shops\n"
+            + ChatColor.WHITE + "/shopadmin <item/player>" + ChatColor.GRAY + " View/manage all <item/player> shops\n"
+            + ChatColor.WHITE + "/shopadmin transfer <playerTo> <playerFrom>" + ChatColor.GRAY + " Change shops' owner\n"
+            + ChatColor.WHITE + "/shopadmin [pos1/pos2/copy]" + ChatColor.GRAY + " Set copy positions\n"
+            + ChatColor.WHITE + "/shopadmin paste" + ChatColor.GRAY + " Set paste position & paste"
         );
         return true;
     }
@@ -97,7 +97,7 @@ public class AdminCmd implements TabExecutor {
         ConcurrentHashMap<String, Shop> dsMap = DisplayShopAddon64.dsHook.getManager().getShopMap();
 
         if (args.length<3) {
-            Utils.sendMessage(sender, ChatColor.RED + "Usage: /testshopadmin transfer <playerTo> <playerFrom>");
+            Utils.sendMessage(sender, ChatColor.RED + "Usage: /shopadmin transfer <playerTo> <playerFrom>");
             return true;
         }
 
@@ -232,7 +232,7 @@ public class AdminCmd implements TabExecutor {
     }
 
     /**
-     * Handles tab completion for the /testshopadmin command.
+     * Handles tab completion for the /shopadmin command.
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

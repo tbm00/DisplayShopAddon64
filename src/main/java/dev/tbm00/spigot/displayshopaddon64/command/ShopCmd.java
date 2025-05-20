@@ -39,7 +39,7 @@ public class ShopCmd implements TabExecutor {
     }
 
     /**
-     * Handles the /testshop command.
+     * Handles the /shop command.
      * 
      * @param player the command sender
      * @param consoleCommand the command being executed
@@ -95,6 +95,8 @@ public class ShopCmd implements TabExecutor {
             case "farm":
             case "farming":
                 return ShopUtils.handleCategoryCmd(player, "shopfarm");
+            case "redstone":
+                return ShopUtils.handleCategoryCmd(player, "shopredstone");
             case "gui":
                 return ShopUtils.handleGuiCmd(player);
             case "searchgui":
@@ -112,19 +114,17 @@ public class ShopCmd implements TabExecutor {
      */
     private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_PURPLE + "--- " + ChatColor.LIGHT_PURPLE + "Shop Owner Commands" + ChatColor.DARK_PURPLE + " ---\n"
-            + ChatColor.WHITE + "/testshop buy <#>" + ChatColor.GRAY + " Buy shop creation item(s)\n"
-            + ChatColor.WHITE + "/testshop list" + ChatColor.GRAY + " Open your shop list & manage GUI\n"
-            + ChatColor.WHITE + "/testshop advertise" + ChatColor.GRAY + " Broadcast the shop you're looking at\n"
-            + ChatColor.WHITE + "/testshop store-inv" + ChatColor.GRAY + " Deposit all appicable items from your inv into your shops\n"
-            + ChatColor.WHITE + "/testshop deposit-all <#>/max" + ChatColor.GRAY + " Deposit money into all your shops\n"
-            + ChatColor.WHITE + "/testshop withdraw-all <#>/max" + ChatColor.GRAY + " Withdraw money from all your shops"
+            + ChatColor.WHITE + "/shop buy <#>" + ChatColor.GRAY + " Buy shop creation item(s)\n"
+            + ChatColor.WHITE + "/shop advertise" + ChatColor.GRAY + " Broadcast the shop you're looking at\n"
+            + ChatColor.WHITE + "/shop store-inv" + ChatColor.GRAY + " Deposit all appicable items from your inv into your shops\n"
+            + ChatColor.WHITE + "/shop deposit-all <#>/max" + ChatColor.GRAY + " Deposit money into all your shops\n"
+            + ChatColor.WHITE + "/shop withdraw-all <#>/max" + ChatColor.GRAY + " Withdraw money from all your shops"
         );
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
-            + ChatColor.WHITE + "/testshop " + ChatColor.GRAY + " Open shop category GUI\n"
-            + ChatColor.WHITE + "/testshop <item>" + ChatColor.GRAY + " Find all <item> shops\n"
-            + ChatColor.WHITE + "/testshop <player>" + ChatColor.GRAY + " Find all <player>'s shops\n"
-            + ChatColor.WHITE + "/testsellinv <#>" + ChatColor.GRAY + " Sell all items in your inv for a minimum of $<#> each\n"
-            + ChatColor.WHITE + "/testsellgui <#>" + ChatColor.GRAY + " Open a GUI and sell items for a minimum of $<#> each"
+            + ChatColor.WHITE + "/shop " + ChatColor.GRAY + " Open shop category GUI\n"
+            + ChatColor.WHITE + "/shop <item>" + ChatColor.GRAY + " Find all <item> shops\n"
+            + ChatColor.WHITE + "/shop <player>" + ChatColor.GRAY + " Find all <player>'s shops\n"
+            + ChatColor.WHITE + "/sellgui <#>" + ChatColor.GRAY + " Open a GUI and sell items for a minimum of $<#> for each item"
         );
         return true;
     }
@@ -279,7 +279,7 @@ public class ShopCmd implements TabExecutor {
         }
 
         if (args.length<2) {
-            Utils.sendMessage(player, "&f/testshop deposit-all <#>/max &7Deposit money into all your shops");
+            Utils.sendMessage(player, "&f/shop deposit-all <#>/max &7Deposit money into all your shops");
             return true;
         }
 
@@ -358,7 +358,7 @@ public class ShopCmd implements TabExecutor {
         }
 
         if (args.length<2) {
-            Utils.sendMessage(player, "&f/testshop withdraw-all <#>/max &7Withdraw money from all your shops");
+            Utils.sendMessage(player, "&f/shop withdraw-all <#>/max &7Withdraw money from all your shops");
             return true;
         }
 
@@ -428,7 +428,7 @@ public class ShopCmd implements TabExecutor {
     }
 
     /**
-     * Handles tab completion for the /testshop command.
+     * Handles tab completion for the /shop command.
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

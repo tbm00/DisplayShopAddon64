@@ -24,7 +24,7 @@ public class SellGuiCmd implements TabExecutor {
     }
 
     /**
-     * Handles the /testsellgui & command.
+     * Handles the /sellgui & command.
      * 
      * @param player the command sender
      * @param consoleCommand the command being executed
@@ -56,7 +56,7 @@ public class SellGuiCmd implements TabExecutor {
      */
     private boolean handleSellGuiCmd(Player player, String[] args) {
         if (args.length<1) {
-            Utils.sendMessage(player, "&f/testsellgui <#> &7Open a GUI and sell items for a minimum of $<#> each");
+            Utils.sendMessage(player, "&f/sellgui <#> &7Open a GUI and sell items for a minimum of $<#> for each item");
             return true;
         }
 
@@ -77,7 +77,7 @@ public class SellGuiCmd implements TabExecutor {
     }
 
     /**
-     * Handles tab completion for the /testsellgui command.
+     * Handles tab completion for the /sellgui command.
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

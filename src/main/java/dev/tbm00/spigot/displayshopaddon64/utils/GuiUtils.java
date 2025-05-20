@@ -309,7 +309,7 @@ public class GuiUtils {
         meta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList());
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&dYour Shops"));
         item.setItemMeta(meta);
-        gui.setItem(6, 1, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "testshop list")));
+        gui.setItem(6, 1, ItemBuilder.from(item).asGuiItem(event -> GuiUtils.handleCategoryClick(event, "shop list")));
         lore.clear();
     }
 

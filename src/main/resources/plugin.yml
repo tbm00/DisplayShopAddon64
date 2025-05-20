@@ -6,19 +6,16 @@ main: dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64
 api-version: 1.17
 depend: [DisplayShops, Vault, Rep64]
 commands:
-  testshop:
-    description: Main command for DisplayShopAddon64
-  testbuy:
-    description: Additional command for DisplayShopAddon64
-  testsell:
-    description: Additional command for DisplayShopAddon64
-  testsellinv:
-    description: Additional command for DisplayShopAddon64
-    aliases: [testsellall]
-  testsellgui:
-    description: Additional command for DisplayShopAddon64
-    aliases: [testsellg, testsg]
-  testshopadmin:
+  shop:
+    description: Search shops for <material>/<enchant>/<player>/etc.
+  buy:
+    description: Search shops for <material>/<enchant>/<player>/etc.
+  sell:
+    description: Search shops for <material>/<enchant>/<player>/etc.
+  sellgui:
+    description: Open a GUI and sell items for a minimum of $<#> for each item
+    aliases: [sellg, sg, sellinv, sellhand]
+  shopadmin:
     description: Admin commands for DisplayShopAddon64
 permissions:
   displayshopaddon64.player:

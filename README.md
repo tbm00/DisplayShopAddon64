@@ -14,40 +14,40 @@ Created by tbm00 for play.mc64.wtf.
 
 ## Commands
 #### Shopper Commands 
-- testshop
-  - `/testshop` Open shop category GUI
-  - `/testshop [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/testshop <item/player>` Open GUI with all shops matching player/item
-- testbuy
-  - `/testbuy` Open shop category GUI
-  - `/testbuy [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/testbuy <item/player>` Open GUI with all buy-able shops matching player/item
-- testsell
-  - `/testsell` Open shop category GUI
-  - `/testsell [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
-  - `/testsell <item/player>` Open GUI with all sell-able shops matching player/item
-  - `/testsell inv <#>` Sell all items in your inv for a minimum of $<#> each
-  - `/testsell gui <#>` Open a GUI and sell items for a minimum of $<#> each
-- testsellinv - alias: testsellall
-  - `/testsellinv <#>` Sell all items in your inv for a minimum of $<#> each
-- testsellgui - alias: testsellg, testsg
-  - `/testsellgui <#>` Open a GUI and sell items for a minimum of $<#> each
+- shop
+  - `/shop` Open shop category GUI
+  - `/shop [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/shop <item/player>` Open GUI with all shops matching player/item
+- buy
+  - `/buy` Open shop category GUI
+  - `/buy [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/buy <item/player>` Open GUI with all buy-able shops matching player/item
+- sell
+  - `/sell` Open shop category GUI
+  - `/sell [pog/blocks/food/drops/ores]` Open shop category GUI with specific landing
+  - `/sell <item/player>` Open GUI with all sell-able shops matching player/item
+  - `/sell inv <#>` Sell all items in your inv for a minimum of $<#> each
+  - `/sell gui <#>` Open a GUI and sell items for a minimum of $<#> each
+- sellinv - alias: sellall
+  - `/sellinv <#>` Sell all items in your inv for a minimum of $<#> each
+- sellgui - alias: sellg, testsg
+  - `/sellgui <#>` Open a GUI and sell items for a minimum of $<#> each
 
 #### Shop Owner Commands
-- `/testshop help` Display help menu
-- `/testshop buy <#>` Buy shop creation item(s)
-- `/testshop list` Open your shop list & manage GUI
-- `/testshop advertise` Broadcast the shop you're looking at
-- `/testshop store-inv` Deposit all appicable items from your inv into your shops
-- `/testshop deposit-all max/<#>` Deposit money into all your shops
-- `/testshop withdraw-all max/<#>` Withdraw money from all your shops
+- `/shop help` Display help menu
+- `/shop buy <#>` Buy shop creation item(s)
+- `/shop list` Open your shop list & manage GUI
+- `/shop advertise` Broadcast the shop you're looking at
+- `/shop store-inv` Deposit all appicable items from your inv into your shops
+- `/shop deposit-all max/<#>` Deposit money into all your shops
+- `/shop withdraw-all max/<#>` Withdraw money from all your shops
 
 #### Admin Commands
-- `/testshopsadmin` View/manage all shops
-- `/testshopsadmin <player/item>` View/manage all <item/player> shops
-- `/testshopsadmin transfer <playerFrom> <playerTo>` Change shops' owner
-- `/testshopsadmin [pos1/pos2/copy]` Set copy positions
-- `/testshopsadmin paste` Set paste position & paste
+- `/shopsadmin` View/manage all shops
+- `/shopsadmin <player/item>` View/manage all <item/player> shops
+- `/shopsadmin transfer <playerFrom> <playerTo>` Change shops' owner
+- `/shopsadmin [pos1/pos2/copy]` Set copy positions
+- `/shopsadmin paste` Set paste position & paste
 
 ## Permissions
 #### Player Permissions

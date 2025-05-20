@@ -30,7 +30,7 @@ public class SellCmd implements TabExecutor {
     }
 
     /**
-     * Handles the /testsell & command.
+     * Handles the /sell & command.
      * 
      * @param player the command sender
      * @param consoleCommand the command being executed
@@ -74,6 +74,8 @@ public class SellCmd implements TabExecutor {
             case "farm":
             case "farming":
                 return ShopUtils.handleCategoryCmd(player, "shopfarm");
+            case "redstone":
+                return ShopUtils.handleCategoryCmd(player, "shopredstone");
             case "all":
             case "inv":
                 return parseSellInvCmd(player, args);
@@ -92,11 +94,10 @@ public class SellCmd implements TabExecutor {
      */
     private boolean handleHelpCmd(Player player) {
         player.sendMessage(ChatColor.DARK_AQUA + "--- " + ChatColor.AQUA + "Shopper Commands" + ChatColor.DARK_AQUA + " ---\n"
-            + ChatColor.WHITE + "/testsell" + ChatColor.GRAY + " Open shop category GUI\n"
-            + ChatColor.WHITE + "/testsell <item>" + ChatColor.GRAY + " Find all <item> shops you can sell to\n"
-            + ChatColor.WHITE + "/testsell <player>" + ChatColor.GRAY + " Find all <player>'s shops you can sell to\n"
-            + ChatColor.WHITE + "/testsellinv <#>" + ChatColor.GRAY + " Sell all items in your inv for a minimum of $<#> each\n"
-            + ChatColor.WHITE + "/testsellgui <#>" + ChatColor.GRAY + " Open a GUI and sell items for a minimum of $<#> each"
+            + ChatColor.WHITE + "/sell" + ChatColor.GRAY + " Open shop category GUI\n"
+            + ChatColor.WHITE + "/sell <item>" + ChatColor.GRAY + " Find all <item> shops you can sell to\n"
+            + ChatColor.WHITE + "/sell <player>" + ChatColor.GRAY + " Find all <player>'s shops you can sell to\n"
+            + ChatColor.WHITE + "/sellgui <#>" + ChatColor.GRAY + " Open a GUI and sell items for a minimum of $<#> each"
         );
         return true;
     }
@@ -110,7 +111,7 @@ public class SellCmd implements TabExecutor {
      */
     private boolean parseSellInvCmd(Player player, String[] args) {
         if (args.length<2) {
-            Utils.sendMessage(player, "&f/testsell inv <#> &7Sell all items in your inv for a minimum of $<#> each");
+            Utils.sendMessage(player, "&f/sell inv <#> &7Sell all items in your inv for a minimum of $<#> each");
             return true;
         }
 
@@ -139,7 +140,7 @@ public class SellCmd implements TabExecutor {
      */
     private boolean parseSellGuiCmd(Player player, String[] args) {
         if (args.length<2) {
-            Utils.sendMessage(player, "&f/testsell gui <#> &7Open a GUI and sell items for a minimum of $<#> each");
+            Utils.sendMessage(player, "&f/sell gui <#> &7Open a GUI and sell items for a minimum of $<#> each");
             return true;
         }
 
@@ -160,7 +161,7 @@ public class SellCmd implements TabExecutor {
     }
 
     /**
-     * Handles tab completion for the /testsell command.
+     * Handles tab completion for the /sell command.
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
