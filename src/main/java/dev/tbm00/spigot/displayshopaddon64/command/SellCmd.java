@@ -78,7 +78,7 @@ public class SellCmd implements TabExecutor {
                 return ShopUtils.handleCategoryCmd(player, "shopredstone");
             case "all":
             case "inv":
-                return parseSellInvCmd(player, args);
+                //return parseSellInvCmd(player, args);
             case "gui":
                 return parseSellGuiCmd(player, args);
             default:
@@ -109,7 +109,7 @@ public class SellCmd implements TabExecutor {
      * @param args the arguments passed to the command
      * @return true after creating gui instance
      */
-    private boolean parseSellInvCmd(Player player, String[] args) {
+    /*private boolean parseSellInvCmd(Player player, String[] args) {
         if (args.length<2) {
             Utils.sendMessage(player, "&f/sell inv <#> &7Sell all items in your inv for a minimum of $<#> each");
             return true;
@@ -129,7 +129,7 @@ public class SellCmd implements TabExecutor {
 
         ShopUtils.handleSellInv(player, player.getInventory(), sell_per);
         return true;
-    }
+    }*/
 
     /**
      * Handles the sub command for selling all items in your inv.
@@ -168,7 +168,7 @@ public class SellCmd implements TabExecutor {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
             list.clear();
-            String[] subCmds = new String[]{"<item>","<player>","inv","gui"};
+            String[] subCmds = new String[]{"<item>","<player>","gui"};
             for (String n : subCmds) {
                 if (n!=null && n.startsWith(args[0])) 
                     list.add(n);
@@ -182,8 +182,8 @@ public class SellCmd implements TabExecutor {
                     list.add(mat.name().toLowerCase());
             }
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("all") || 
-                args[0].equalsIgnoreCase("inv") || 
+            if (//args[0].equalsIgnoreCase("all") || 
+                //args[0].equalsIgnoreCase("inv") || 
                 args[0].equalsIgnoreCase("gui")) {
                     list.add("<#>");
             }

@@ -4,7 +4,8 @@ description: ${project.description}
 author: tbm00
 main: dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64
 api-version: 1.17
-depend: [DisplayShops, Vault, Rep64, ShopGUIPlus]
+depend: [DisplayShops, Vault, Rep64]
+softdepend: [ShopGUIPlus]
 commands:
   shop:
     description: Search shops for <material>/<enchant>/<player>/etc.
@@ -14,7 +15,7 @@ commands:
     description: Search shops for <material>/<enchant>/<player>/etc.
   sellgui:
     description: Open a GUI and sell items for a minimum of $<#> for each item
-    aliases: [sellg, sg, sellinv, sellhand]
+    aliases: [sellg, sg, sellinv, sellhand, sellall]
   shopadmin:
     description: Admin commands for DisplayShopAddon64
 permissions:
