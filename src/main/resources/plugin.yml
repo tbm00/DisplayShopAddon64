@@ -4,7 +4,7 @@ description: ${project.description}
 author: tbm00
 main: dev.tbm00.spigot.displayshopaddon64.DisplayShopAddon64
 api-version: 1.17
-depend: [DisplayShops, Vault, Rep64]
+depend: [DisplayShops, Vault, Rep64, ShopGUIPlus]
 commands:
   shop:
     description: Search shops for <material>/<enchant>/<player>/etc.

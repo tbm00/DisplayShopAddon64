@@ -19,7 +19,7 @@ public class SellGui {
 
         gui.setCloseGuiAction(event -> {
             BukkitScheduler scheduler = Bukkit.getScheduler();
-            scheduler.runTaskAsynchronously(javaPlugin, () -> {
+            scheduler.runTask(javaPlugin, () -> {
                 if (!player.isDead()) ShopUtils.handleSellInv(player, event.getInventory(), sell_per);
             });
         });
